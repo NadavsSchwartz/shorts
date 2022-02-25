@@ -1,11 +1,16 @@
-const fastifyPlugin = require('fastify-plugin');
+import mongoose from 'mongoose';
 
-async function dbConnector(fastify, options) {
-	fastify.register(require('fastify-mongodb'), {
-		url: process.env.MONGODB_URL,
-	});
-}
+const connectDB = async () => {
+	try {
+		await mongoose.connect(process.env.MONGODB_URI, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		});
+		console.log('MongoDB connected');
+	} catch (error) {
+		console.log(error.message);
+		process.exit(1);
+	}
+};
 
-// Wrapping a plugin function with fastify-plugin exposes the decorators
-// and hooks, declared inside the plugin to the parent scope.
-module.exports = fastifyPlugin(dbConnector);
+export default connectDB;
