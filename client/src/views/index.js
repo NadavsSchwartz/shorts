@@ -1,5 +1,4 @@
-export { default as Home } from './Home';
-export { default as IndexView } from './IndexView';
+export { default as IndexView } from './Landing';
 // export { default as Customers } from './Customers';
 // export { default as HireUs } from './HireUs';
 export { default as Faq } from './Faq';
@@ -49,4 +48,3 @@ export { default as Signup } from './Signup';
 // export { default as AccountNotifications } from './Account/Notifications';
 // export { default as AccountSecurity } from './Account/Security';
 export { default as NotFound } from './NotFound';
-export { default as NotFoundCover } from './NotFoundCover';

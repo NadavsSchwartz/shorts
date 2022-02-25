@@ -1,1 +1,1 @@
-export { default } from './SigninSimple';
+export { default } from './Signin';

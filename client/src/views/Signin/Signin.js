@@ -7,7 +7,7 @@ import Main from 'layouts/Main';
 import Container from 'components/Container';
 import { Form } from './components';
 
-const SigninSimple = () => {
+const Signin = () => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,
@@ -63,4 +63,4 @@ const SigninSimple = () => {
   );
 };
 
-export default SigninSimple;
+export default Signin;

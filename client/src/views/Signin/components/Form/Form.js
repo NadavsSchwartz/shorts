@@ -8,8 +8,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
-import GoogleLogin from 'react-google-login';
-import { Divider } from '@mui/material';
+import { ButtonBase, Divider } from '@mui/material';
 const validationSchema = yup.object({
   email: yup
     .string()
@@ -38,10 +37,12 @@ const Form = () => {
     onSubmit,
   });
 
-  const responseGoogle = (response) => {
-    console.log(response);
+  // const responseGoogle = (response) => {
+  //   console.log(response);
+  // };
+  const googleLogin = () => {
+    window.open('http://localhost:4000/auth/google', '_self');
   };
-
   return (
     <Box>
       <Box marginBottom={4}>
@@ -67,26 +68,10 @@ const Form = () => {
           Login to manage your account.
         </Typography>
       </Box>
-      <Box marginBottom={4}>
-        <GoogleLogin
-          render={(renderProps) => (
-            <Button
-              style={{
-                backgroundImage: `url(https://camo.githubusercontent.com/d1e745a2ca0333b03f72e1c8c06650b4724ce1e19b6ac5ca2e559402a4eeab93/68747470733a2f2f73746f726167652e676f6f676c65617069732e636f6d2f7072757669742d3936382e61707073706f742e636f6d2f72656163742d676f6f676c652d627574746f6e2f707265766965772e706e67)`,
-              }}
-              sx={{ height: 60, width: '250px' }}
-              onClick={renderProps.onClick}
-              disabled={renderProps.disabled}
-            />
-          )}
-          clientId="862246941939-okd8sp3efalu54330i1cfcltu0ota1gl.apps.googleusercontent.com"
-          buttonText="Login"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          isSignedIn={true}
-          cookiePolicy={'single_host_origin'}
-        />
-      </Box>
+      <div className="" style={{ width: '100px' }} onClick={googleLogin}>
+        <ButtonBase>Login With Google</ButtonBase>
+      </div>
+
       <Divider>OR</Divider>
 
       <form onSubmit={formik.handleSubmit}>

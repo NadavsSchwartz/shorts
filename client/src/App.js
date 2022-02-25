@@ -1,5 +1,4 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import React, { useContext } from 'react';
 import Routes from './Routes';
 import Page from './components/Page';
 
@@ -8,13 +7,13 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'react-image-lightbox/style.css';
 import 'aos/dist/aos.css';
-
+import { userContext } from 'Context';
 const App = () => {
+  const userObject = useContext(userContext);
+  console.log(userObject);
   return (
     <Page>
-      <BrowserRouter>
-        <Routes />
-      </BrowserRouter>
+      <Routes />
     </Page>
   );
 };

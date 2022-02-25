@@ -83,7 +83,7 @@ const mock = [
         x="0px"
         y="0px"
         viewBox="0 0 392.502 392.502"
-        style={{ enableBackground: 'new 0 0 392.502 392.502;' }}
+        style={{ enableBackground: 'new 0 0 392.502 392.502' }}
       >
         <path
           style={{ fill: '#194F82' }}
