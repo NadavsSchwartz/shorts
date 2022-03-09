@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 // import Button from '@mui/material/Button';
@@ -7,9 +7,11 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import LightLogo from '../../../../assets/LightLogo.png';
 import DarkLogo from '../../../../assets/DarkLogo.png';
+import { userContext } from 'Context';
 const Footer = () => {
   const theme = useTheme();
   const { mode } = theme.palette;
+  const userObject = useContext(userContext);
 
   return (
     <Grid container spacing={2}>
@@ -24,7 +26,7 @@ const Footer = () => {
           <Box
             display={'flex'}
             component="a"
-            href="/"
+            href={userObject && !userObject.email ? '/' : '/home'}
             title="Shorts"
             width={80}
           >
