@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -8,10 +8,23 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LightLogo from '../../../../assets/LightLogo.png';
 import DarkLogo from '../../../../assets/DarkLogo.png';
 import ThemeModeToggler from 'components/ThemeModeToggler';
-import { Typography } from '@mui/material';
+import { Avatar, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { userContext } from 'Context';
+import axios from 'axios';
+
 const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
   const theme = useTheme();
   const { mode } = theme.palette;
+  const userObject = useContext(userContext);
+
+  const logout = () => {
+    axios
+      .get('http://localhost:4000/auth/logout', { withCredentials: true })
+      .then((res) => {
+        if (res.data === 'success') window.location.href = '/';
+      });
+  };
 
   return (
     <Box
@@ -23,7 +36,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
       <Box
         display={'flex'}
         component="a"
-        href="/"
+        href={userObject && !userObject.email ? '/' : '/home'}
         title="Shorts"
         width={{ xs: 100, md: 120 }}
       >
@@ -35,16 +48,8 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
         />
       </Box>
       <Box sx={{ display: { xs: 'none', md: 'flex' } }} alignItems={'center'}>
-        <Box marginLeft={4}>
-          <Button
-            component={'a'}
-            href="/faq"
-            fullWidth
-            sx={{
-              justifyContent: 'flex-start',
-            }}
-          >
-            {' '}
+        <Box>
+          <Button component={'a'} href="/faq">
             <Typography fontWeight={700} color="text.primary">
               {'FAQ'}
             </Typography>
@@ -52,22 +57,52 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
         </Box>
 
         <Box marginLeft={4}>
-          <Button
-            variant="contained"
-            color="primary"
-            component="a"
-            target="blank"
-            href="/signin"
-            size="large"
-          >
-            Login
-          </Button>
+          {userObject && !userObject.email ? (
+            <Link to="/signin" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                target="blank"
+                href="/signin"
+                size="large"
+              >
+                Sign In
+              </Button>
+            </Link>
+          ) : (
+            <Box
+              display={'flex'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              width={1}
+            >
+              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                <Box marginRight={2}>
+                  <Avatar src={userObject.avatar} />
+                </Box>
+              </Box>
+
+              <div onClick={logout}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  target="blank"
+                  size="medium"
+                >
+                  Log out
+                </Button>{' '}
+              </div>
+            </Box>
+          )}
         </Box>
-        <Box marginLeft={4}>
+        <Box marginLeft={2}>
           <ThemeModeToggler />
         </Box>
       </Box>
       <Box sx={{ display: { xs: 'flex', md: 'none' } }} alignItems={'center'}>
+        <Box marginRight={2}>
+          <Avatar src={userObject.avatar} />
+        </Box>
         <Button
           onClick={() => onSidebarOpen()}
           aria-label="Menu"
