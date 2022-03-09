@@ -1,6 +1,6 @@
 export const light = {
   alternate: {
-    main: '#f7faff',
+    main: '#e1e2e4',
     dark: '#edf1f7',
   },
   cardShadow: 'rgba(23, 70, 161, .11)',
@@ -23,8 +23,8 @@ export const light = {
   },
   divider: 'rgba(0, 0, 0, 0.12)',
   background: {
-    paper: '#ffffff',
-    default: '#ffffff',
+    paper: '#f9fafa',
+    default: '#f9fafa',
     level2: '#f5f5f5',
     level1: '#ffffff',
   },
