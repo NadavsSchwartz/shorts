@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
@@ -7,9 +7,21 @@ import { useTheme } from '@mui/material/styles';
 import LightLogo from '../../../../../../assets/LightLogo.png';
 import DarkLogo from '../../../../../../assets/DarkLogo.png';
 import { Typography } from '@mui/material';
+import { userContext } from 'Context';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 const SidebarNav = () => {
   const theme = useTheme();
   const { mode } = theme.palette;
+  const userObject = useContext(userContext);
+
+  const logout = () => {
+    axios
+      .get('http://localhost:4000/auth/logout', { withCredentials: true })
+      .then((res) => {
+        if (res.data === 'success') window.location.href = '/';
+      });
+  };
 
   return (
     <Box>
@@ -17,7 +29,7 @@ const SidebarNav = () => {
         <Box
           display={'flex'}
           component="a"
-          href="/"
+          href={userObject && !userObject.email ? '/' : '/home'}
           title="Shorts"
           width={{ xs: 100, md: 120 }}
         >
@@ -47,17 +59,32 @@ const SidebarNav = () => {
         </Box>
 
         <Box marginTop={1}>
-          <Button
-            size={'large'}
-            variant="contained"
-            color="primary"
-            fullWidth
-            component="a"
-            target="blank"
-            href="/signin"
-          >
-            Log In
-          </Button>
+          {userObject && !userObject.email ? (
+            <Link to="/signin" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                target="blank"
+                fullWidth
+                href="/signin"
+                size="large"
+              >
+                Sign In
+              </Button>
+            </Link>
+          ) : (
+            <div onClick={logout}>
+              <Button
+                variant="contained"
+                color="primary"
+                target="blank"
+                size="large"
+                fullWidth
+              >
+                Log out
+              </Button>
+            </div>
+          )}
         </Box>
       </Box>
     </Box>
