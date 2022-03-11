@@ -1,1 +1,1 @@
-export { default } from './IndexView';
+export { default } from './Landing';
