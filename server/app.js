@@ -2,112 +2,84 @@ import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import connectDB from './config/MongoDB.js';
-import usersRoutes from './routes/User.js';
+import ShortenedLinkRoutes from './routes/ShortenedLinkRoutes.js';
+import UserRoutes from './routes/UserRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import morgan from 'morgan';
 import cors from 'cors';
 import passport from 'passport';
-import GoogleStrategy from 'passport-google-oauth20';
 import User from './models/userModel.js';
+import cookieParser from 'cookie-parser';
+import './strategies/GoogleStrategy.js';
+import './strategies/TwitterStrategy.js';
+import './strategies/GithubStrategy.js';
 
-dotenv.config();
 
-await connectDB();
 const app = express();
 
+await dotenv.config();
+// Load environment variables from .env file in non prod environments
+if (process.env.NODE_ENV === 'development') {
+	app.use(morgan('dev'));
+}
+
+await connectDB();
+
 app.use(express.json());
-app.use(
-	cors({
-		origin: 'http://localhost:3000',
-		credentials: true,
-	})
-);
+
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
+//Add the client URL to the CORS policy
+
+const whitelist = process.env.WHITELISTED_DOMAINS
+	? process.env.WHITELISTED_DOMAINS.split(',')
+	: [];
+
+const corsOptions = {
+	origin: function (origin, callback) {
+		if (!origin || whitelist.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			callback(new Error('Not allowed by CORS'));
+		}
+	},
+
+	credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+app.set('trust proxy', 1);
+
 app.use(
 	session({
-		secret: 'secret',
+		secret: 'secretcode',
 		resave: true,
 		saveUninitialized: true,
 	})
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
+	console.log('seri user:', user);
 	return done(null, user._id);
 });
 
 passport.deserializeUser((id, done) => {
+	console.log('des idL', id);
 	User.findById(id, (err, doc) => {
+		// Whatever we return goes to the client and binds to the req.user property
 		return done(null, doc);
 	});
 });
 
-passport.use(
-	new GoogleStrategy(
-		{
-			clientID: `${process.env.GOOGLE_CLIENT_ID}`,
-			clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-			callbackURL: '/auth/google/callback',
-		},
-		function (accessToken, refreshToken, profile, email, cb) {
-			const userEmail = email.emails[0].value;
-			User.findOne({ googleId: email.id }, async (err, doc) => {
-				if (err) {
-					return cb(err, null);
-				}
-				if (!doc) {
-					const newUser = new User({
-						googleId: email.id,
-						firstName: email.name.givenName,
-						lastName: email.name.familyName,
-						name: email.displayName,
-						email: userEmail,
-					});
+app.use('/', UserRoutes);
+app.use('/', ShortenedLinkRoutes);
 
-					await newUser.save();
-					cb(null, newUser);
-				}
-				cb(null, doc);
-			});
-		}
-	)
-);
-app.get(
-	'/auth/google',
-	passport.authenticate('google', {
-		scope: ['openid', 'profile', 'email'],
-	})
-);
-
-app.get(
-	'/auth/google/callback',
-	passport.authenticate('google', {
-		failureRedirect: 'http://localhost:3000',
-		session: true,
-	}),
-	function (req, res) {
-		res.redirect('http://localhost:3000');
-	}
-);
-
-if (process.env.NODE_ENV === 'development') {
-	app.use(morgan('dev'));
-}
 app.get('/', (req, res) => {
-	res.send('API is running....');
-});
-
-app.use('/api/v1/', usersRoutes);
-
-app.get('/me', (req, res) => {
-	res.send(req.user);
-});
-
-app.get('/logout', (req, res) => {
-	if (req.user) {
-		req.logout();
-		res.send('success');
-	}
+	res.send({ status: 'success' });
 });
 
 app.use(notFound);
