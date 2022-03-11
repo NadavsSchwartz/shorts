@@ -19,6 +19,7 @@ const Home = () => {
     getUserStats();
   }, []);
   const Analytics = userStats && userStats.Analytics;
+
   const LatestAnalytic = Analytics && Analytics.slice(-1);
   return (
     <Main style={{ minHeight: '100vh' }}>
@@ -52,7 +53,9 @@ const Home = () => {
               <Graph />
             </Grid>
             <Grid item xs={12} md={6} lg={4} xl={3}>
-              <TrafficByState />
+              <TrafficByState
+                AllLocations={userStats && userStats.AllLocations}
+              />
             </Grid>
           </Grid>
         </Container>
