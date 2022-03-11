@@ -17,8 +17,10 @@ import {
 } from 'react-share';
 
 export const LatestLinkCard = ({ LatestLink, ...props }) => {
-  const timeAgo = format(LatestLink && LatestLink[0].createdAt);
-
+  const timeAgo = format(
+    LatestLink && LatestLink.length !== 0 ? LatestLink[0].createdAt : '',
+  );
+  const data = LatestLink && LatestLink.length !== 0 ? LatestLink[0] : null;
   return (
     <Card {...props} sx={{ maxHeight: '95%' }}>
       <CardContent>
@@ -28,13 +30,10 @@ export const LatestLinkCard = ({ LatestLink, ...props }) => {
               Destination:
             </Typography>
             <Grid item>
-              <a
-                href={LatestLink && LatestLink[0].longUrl}
-                style={{ textDecoration: 'none' }}
-              >
+              <a href={data && data.longUrl} style={{ textDecoration: 'none' }}>
                 <Typography color="textPrimary" variant="body4">
                   <Box component="span" fontWeight="fontWeightMedium">
-                    {LatestLink && LatestLink[0].longUrl}
+                    {data && data.longUrl}
                   </Box>{' '}
                 </Typography>
               </a>{' '}
@@ -70,7 +69,7 @@ export const LatestLinkCard = ({ LatestLink, ...props }) => {
             <Grid item>
               <Grid item sx={{ pl: 4 }}>
                 <Typography color="textPrimary" variant="h4">
-                  {LatestLink && LatestLink[0].analytics.clicks}
+                  {data && data.analytics.clicks}
                 </Typography>
               </Grid>
               <Typography color="textSecondary" variant="overline">
