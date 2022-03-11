@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -9,13 +9,14 @@ import Grid from '@mui/material/Grid';
 
 import Main from 'layouts/Main';
 import Container from 'components/Container';
+import { userContext } from 'Context';
 
 const NotFound = () => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,
   });
-
+  const userObject = useContext(userContext);
   return (
     <Main>
       <Box
@@ -66,15 +67,27 @@ const NotFound = () => {
                   display={'flex'}
                   justifyContent={{ xs: 'center', md: 'flex-start' }}
                 >
-                  <Button
-                    component={Link}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    href={'/'}
-                  >
-                    Back home
-                  </Button>
+                  {userObject && !userObject.email ? (
+                    <Button
+                      component={Link}
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      href={'/'}
+                    >
+                      Back home
+                    </Button>
+                  ) : (
+                    <Button
+                      component={Link}
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      href={'/home'}
+                    >
+                      Back home
+                    </Button>
+                  )}
                 </Box>
               </Box>
             </Grid>
