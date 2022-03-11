@@ -3,10 +3,10 @@ import {
 	getShortenedLinkAnalytics,
 	createNewShortenedLink,
 	redirectToShortenedLink,
-} from '../controllers/hotelController.js';
+} from '../controllers/shortLinkController.js';
 const router = express.Router();
-
-router.route('/url/:id').get(getShortenedLinkAnalytics);
-router.route('/:id').get(redirectToShortenedLink).post(createNewShortenedLink);
+router.route('/:id/analytics').get(getShortenedLinkAnalytics);
+router.route('/:id').get(redirectToShortenedLink);
+router.route('/url').post(createNewShortenedLink);
 
 export default router;
