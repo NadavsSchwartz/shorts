@@ -1,36 +1,37 @@
-import React from 'react';
+import React, { lazy } from 'react';
 
-import {
-  Faq as FaqView,
-  NotFound as NotFoundView,
-  Signin as SigninSimpleView,
-  Signup as SignupSimpleView,
-} from 'views';
-import Landing from './Landing';
-
+const Faq = lazy(() => import('./Faq'));
+const Home = lazy(() => import('./Home'));
+const Landing = lazy(() => import('./Landing/Landing'));
+const Signup = lazy(() => import('./Signup'));
+const Signin = lazy(() => import('./Signin'));
+const NotFound = lazy(() => import('./NotFound'));
 const routes = [
   {
     path: '/',
     renderer: (params = {}) => <Landing {...params} />,
   },
-
+  {
+    path: '/home',
+    renderer: (params = {}) => <Home {...params} />,
+  },
   {
     path: '/faq',
-    renderer: (params = {}) => <FaqView {...params} />,
+    renderer: (params = {}) => <Faq {...params} />,
   },
   {
     path: '/not-found',
-    renderer: (params = {}) => <NotFoundView {...params} />,
+    renderer: (params = {}) => <NotFound {...params} />,
   },
 
   {
     path: '/signin',
-    renderer: (params = {}) => <SigninSimpleView {...params} />,
+    renderer: (params = {}) => <Signin {...params} />,
   },
 
   {
     path: '/signup',
-    renderer: (params = {}) => <SignupSimpleView {...params} />,
+    renderer: (params = {}) => <Signup {...params} />,
   },
 ];
 export default routes;
