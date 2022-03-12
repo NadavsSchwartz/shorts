@@ -48,7 +48,7 @@ const Form = (props) => {
             and try again.`);
       setTimeout(() => {
         SetError('');
-      }, 3000);
+      }, 4000);
     }
 
     SetLoading(false);
@@ -57,6 +57,7 @@ const Form = (props) => {
   return (
     <Card {...props}>
       <CardContent>
+        {error && <Alert severity="error">{error}</Alert>}
         {loading ? (
           <CircularProgress
             style={{
@@ -73,18 +74,18 @@ const Form = (props) => {
             <form autoComplete="on" onSubmit={handleSubmitForm}>
               <Box margin={2}>
                 <TextField
-                  label="Link to shorten..."
+                  InputLabelProps={{ required: false }}
+                  label="Long link to shorten..."
                   type="text"
-                  variant="outlined"
+                  variant="standard"
                   onChange={handleUrlChange}
-                  size="large"
                   fullWidth
                   required
                 />
               </Box>
-              <Box margin={2}>
+              <Box margin={1}>
                 <Button
-                  sx={{ fontWeight: 'bold' }}
+                  sx={{ fontWeight: 'bold', marginTop: '20px' }}
                   variant="contained"
                   color="primary"
                   size="large"
@@ -98,7 +99,6 @@ const Form = (props) => {
           </>
         )}
       </CardContent>
-      {error && <Alert severity="error">{error}</Alert>}
     </Card>
   );
 };
