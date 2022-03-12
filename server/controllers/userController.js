@@ -108,8 +108,10 @@ export const getUserStats = async (req, res) => {
 			options: { sort: { created_at: -1 } },
 		});
 		let totalClicks = 0;
+
 		await Analytics.forEach(async (ShortLink) => {
-			return (totalClicks = (await ShortLink.analytics.clicks) + totalClicks);
+			return (totalClicks =
+				(await ShortLink.analytics.TotalClicks) + totalClicks);
 		});
 		const totalLinks = Analytics.length;
 		let AllLocations = [];
@@ -125,8 +127,9 @@ export const getUserStats = async (req, res) => {
 			AllLocations: AllLocations,
 		});
 	} catch (error) {
-		res.status(500).json({ message: 'Something went wrong', data: { error } });
-
 		console.log(error);
+		return res
+			.status(500)
+			.json({ message: 'Something went wrong', data: { error } });
 	}
 };
