@@ -19,7 +19,7 @@ router.get(
 		session: true,
 	}),
 	function (req, res) {
-		res.redirect('http://localhost:3000/home');
+		return res.redirect('http://localhost:3000/home');
 	}
 );
 
@@ -33,8 +33,8 @@ router.get('/auth/logout', (req, res) => {
 	}
 });
 router.get('/me', (req, res, next) => {
-	if (req.user) res.send(req.user);
-	res.status(400).json({ message: 'no user found' });
+	if (req.user) return res.send(req.user);
+	return res.status(400).json({ message: 'no user found' });
 });
 
 router.get('/auth/twitter', passport.authenticate('twitter'));
@@ -47,7 +47,7 @@ router.get(
 		failureMessage: true,
 	}),
 	function (req, res) {
-		res.redirect('http://localhost:3000/home');
+		return res.redirect('http://localhost:3000/home');
 	}
 );
 
@@ -61,7 +61,7 @@ router.get(
 		failureMessage: true,
 	}),
 	function (req, res) {
-		res.redirect('http://localhost:3000/home');
+		return res.redirect('http://localhost:3000/home');
 	}
 );
 router.get('/user/stats', getUserStats);
