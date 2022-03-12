@@ -14,7 +14,6 @@ import './strategies/GoogleStrategy.js';
 import './strategies/TwitterStrategy.js';
 import './strategies/GithubStrategy.js';
 
-
 const app = express();
 
 await dotenv.config();
@@ -68,8 +67,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-	console.log('des idL', id);
-	User.findById(id, (err, doc) => {
+	return User.findById(id, (err, doc) => {
 		// Whatever we return goes to the client and binds to the req.user property
 		return done(null, doc);
 	});
@@ -79,7 +77,7 @@ app.use('/', UserRoutes);
 app.use('/', ShortenedLinkRoutes);
 
 app.get('/', (req, res) => {
-	res.send({ status: 'success' });
+	return res.send({ status: 'success' });
 });
 
 app.use(notFound);
