@@ -43,6 +43,7 @@
         "aos": "^2.3.4",
         "card-validator": "^8.1.1",
         "chart.js": "^3.7.1",
+        "date-fns": "^2.28.0",
         "formik": "^2.2.6",
         "jarallax": "^1.12.8",
         "prop-types": "^15.7.2",
