@@ -15,7 +15,6 @@ export const getShortenedLinkAnalytics = () => {};
 export const createNewShortenedLink = async (req, res) => {
 	try {
 		const { longUrl } = req.body;
-		let urlData;
 
 		if (longUrl && checkWebURL(longUrl).valid === true) {
 		}
@@ -33,14 +32,14 @@ export const createNewShortenedLink = async (req, res) => {
 		const isUrlIdExists = await ShortLink.find({ urlId: newUrlId });
 		if (isUrlIdExists.length === 0);
 		{
-			const user = req.user;
-			console.log(req.user);
 			const shortUrl = shortBaseUrl + '/' + newUrlId;
+			const siteIcon = `https://f1.allesedv.com/36/${longUrl}`;
 			const newAnalytics = new Analytics();
 			await newAnalytics.save();
 			const itemToBeSaved = {
 				longUrl,
 				shortUrl,
+				siteIcon,
 				urlId: newUrlId,
 				user: req.user._id,
 				analytics: newAnalytics._id,
@@ -77,12 +76,19 @@ export const redirectToShortenedLink = async (req, res) => {
 			const { data } = await axios.get(
 				`https://ipinfo.io/json/?${req.ip}?token=560f38041f5660`
 			);
+			const currentTime = new Date().toISOString().split('T', 1)[0];
 
-			const updateAnalytics = await Analytics.findOneAndUpdate(
+			await Analytics.findOneAndUpdate(
 				{
 					shortLink: foundShortenedLink._id,
 				},
-				{ $push: { location: data }, $inc: { clicks: 1 } },
+				{
+					$push: {
+						location: data,
+						clicks: { date: currentTime },
+					},
+					$inc: { TotalClicks: 1 },
+				},
 				{ upsert: true, returnDocument: 'after' }
 			);
 
