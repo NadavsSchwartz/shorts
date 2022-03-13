@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const analyticsSchema = mongoose.Schema(
 	{
-		clicks: {
+		TotalClicks: {
 			type: Number,
 			required: true,
 			default: 0,
@@ -15,6 +15,7 @@ const analyticsSchema = mongoose.Schema(
 			type: Array,
 			require: false,
 		},
+		clicks: { type: Array, require: true },
 	},
 	{ timestamps: true }
 );
