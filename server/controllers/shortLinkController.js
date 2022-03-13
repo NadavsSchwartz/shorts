@@ -13,6 +13,8 @@ export const getShortenedLinkAnalytics = () => {};
 // @desc    Create New Shortened Link
 // @route   POST /api/v1/url
 export const createNewShortenedLink = async (req, res) => {
+	const url = new URL(req.body.longUrl);
+	const urlOrigin = url.origin;
 	try {
 		const { longUrl } = req.body;
 
@@ -33,7 +35,7 @@ export const createNewShortenedLink = async (req, res) => {
 		if (isUrlIdExists.length === 0);
 		{
 			const shortUrl = shortBaseUrl + '/' + newUrlId;
-			const siteIcon = `https://f1.allesedv.com/36/${longUrl}`;
+			const siteIcon = `https://f1.allesedv.com/36/${urlOrigin}`;
 			const newAnalytics = new Analytics();
 			await newAnalytics.save();
 			const itemToBeSaved = {
