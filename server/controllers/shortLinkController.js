@@ -5,13 +5,26 @@ import uri from 'node-uri';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
 const shortBaseUrl = 'http://localhost:4000';
-// @desc    Get Shortened Link Analytics
-// @route   GET /api/v1/link/:id
 const { checkWebURL } = uri;
-export const getShortenedLinkAnalytics = () => {};
+
+// @desc    delete Shortened Link Analytics
+// @route   DELETE /url
+export const deleteShortLink = async (req, res) => {
+	const isShortLink = await ShortLink.findOne({
+		shortUrl: req.params.shortUrl,
+	});
+
+	if (isShortLink) {
+		await isShortLink.remove();
+		return res.status(200).json({ message: 'Short Link removed' });
+	} else {
+		res.status(404);
+		return new Error('Short Link not found');
+	}
+};
 
 // @desc    Create New Shortened Link
-// @route   POST /api/v1/url
+// @route   POST /url
 export const createNewShortenedLink = async (req, res) => {
 	const url = new URL(req.body.longUrl);
 	const urlOrigin = url.origin;
@@ -64,7 +77,7 @@ export const createNewShortenedLink = async (req, res) => {
 };
 
 // @desc    Redirect to Shortened Link
-// @route   GET /api/v1/:id
+// @route   GET /:id
 export const redirectToShortenedLink = async (req, res) => {
 	const shortenedLinkId = req.params.id;
 	let foundShortenedLink;
