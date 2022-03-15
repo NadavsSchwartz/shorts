@@ -9,6 +9,7 @@ import {
 const reducer = combineReducers({
   userDetails: userDetailsReducer,
   userStats: userStatsReducer,
+  
 });
 
 const initialState = {};

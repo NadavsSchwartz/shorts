@@ -1,4 +1,12 @@
 import {
+  CREATE_LINK_FAIL,
+  CREATE_LINK_REQUEST,
+  CREATE_LINK_SUCCESS,
+  DELETE_LINK_FAIL,
+  DELETE_LINK_REQUEST,
+  DELETE_LINK_SUCCESS,
+} from 'store/actions/shortLinkAcionts';
+import {
   USER_DETAILS_FAIL,
   USER_DETAILS_REQUEST,
   USER_DETAILS_RESET,
@@ -13,9 +21,9 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
     case USER_DETAILS_REQUEST:
       return { ...state, loading: true };
     case USER_DETAILS_SUCCESS:
-      return { loading: false, user: action.payload };
+      return { ...state, loading: false, user: action.payload };
     case USER_DETAILS_FAIL:
-      return { loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload };
     case USER_DETAILS_RESET:
       return { user: {} };
     default:
@@ -23,15 +31,34 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
   }
 };
 
-export const userStatsReducer = (state = { stats: [] }, action) => {
+export const userStatsReducer = (state = { stats: {} }, action) => {
   switch (action.type) {
     case USER_STATS_REQUEST:
       return { ...state, loading: true };
     case USER_STATS_SUCCESS:
-      return { loading: false, stats: action.payload };
+      return { ...state, loading: false, stats: action.payload };
     case USER_STATS_FAIL:
-      return { loading: false, error: action.payload };
-
+      return { ...state, loading: false, error: action.payload };
+    case CREATE_LINK_REQUEST:
+      return { ...state, loading: true };
+    case CREATE_LINK_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        stats: action.payload,
+      };
+    case CREATE_LINK_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    case DELETE_LINK_REQUEST:
+      return { ...state, loading: true };
+    case DELETE_LINK_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        stats: action.payload,
+      };
+    case DELETE_LINK_FAIL:
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
