@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -18,10 +18,11 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { useDispatch } from 'react-redux';
 import { deleteShortLink } from 'store/actions/shortLinkAcionts';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Alert, Button, Snackbar } from '@mui/material';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -39,8 +40,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
+//   IE11 support
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -177,13 +177,7 @@ const EnhancedTableToolbar = (props) => {
             <DeleteIcon />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null}
     </Toolbar>
   );
 };
@@ -194,12 +188,13 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable({ AllShortLinks }) {
   const dispatch = useDispatch();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('clicks');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('clicks');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [successCopyUrlMessage, SetSuccessCopyUrlMessage] = useState(false);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -254,8 +249,24 @@ export default function EnhancedTable({ AllShortLinks }) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - AllShortLinks.length) : 0;
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    SetSuccessCopyUrlMessage(false);
+  };
   return (
     <Box sx={{ width: '100%' }}>
+      <Snackbar
+        open={successCopyUrlMessage}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Successfully copied the short url!
+        </Alert>
+      </Snackbar>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar
           numSelected={selected.length}
@@ -276,7 +287,7 @@ export default function EnhancedTable({ AllShortLinks }) {
               rowCount={AllShortLinks.length}
             />
             <TableBody>
-              {/*  support IE11 */}
+              {/*for IE11 support  */}
               {stableSort(AllShortLinks, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
@@ -286,14 +297,16 @@ export default function EnhancedTable({ AllShortLinks }) {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.shortUrl)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.shortUrl}
                       selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
+                      <TableCell
+                        padding="checkbox"
+                        onClick={(event) => handleClick(event, row.shortUrl)}
+                      >
                         <Checkbox
                           color="primary"
                           checked={isItemSelected}
@@ -306,15 +319,13 @@ export default function EnhancedTable({ AllShortLinks }) {
                       <TableCell align="left">
                         {' '}
                         <Typography
-                          noWrap
                           sx={{
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             maxWidth: '200px',
                           }}
-                          component={'div'}
                         >
-                          <Paper>{row && row.longUrl}</Paper>
+                          {row && row.longUrl}
                         </Typography>
                       </TableCell>
                       <TableCell align="left">
@@ -322,7 +333,21 @@ export default function EnhancedTable({ AllShortLinks }) {
                       </TableCell>
 
                       <TableCell>{row.createdAt.substring(0, 10)}</TableCell>
-                      <TableCell>{row.shortUrl}</TableCell>
+                      <TableCell>
+                        {row.shortUrl}
+                        <Button
+                          onClick={() =>
+                            navigator.clipboard.writeText(row.shortUrl)
+                          }
+                        >
+                          <ContentCopyIcon
+                            width={5}
+                            onClick={() =>
+                              SetSuccessCopyUrlMessage(!successCopyUrlMessage)
+                            }
+                          />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
