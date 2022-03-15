@@ -1,19 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
-
-// import NavItem from './components/NavItem';
 import LightLogo from '../../../../../../assets/LightLogo.png';
 import DarkLogo from '../../../../../../assets/DarkLogo.png';
 import { Typography } from '@mui/material';
-import { userContext } from 'Context';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const SidebarNav = () => {
   const theme = useTheme();
   const { mode } = theme.palette;
-  const userObject = useContext(userContext);
+  const userDetails = useSelector((state) => state.userDetails);
+  const { user } = userDetails;
 
   const logout = () => {
     axios
@@ -29,7 +28,7 @@ const SidebarNav = () => {
         <Box
           display={'flex'}
           component="a"
-          href={userObject && !userObject.email ? '/' : '/home'}
+          href={user && !user.email ? '/' : '/home'}
           title="Shorts"
           width={{ xs: 100, md: 120 }}
         >
@@ -59,7 +58,7 @@ const SidebarNav = () => {
         </Box>
 
         <Box marginTop={1}>
-          {userObject && !userObject.email ? (
+          {user && !user.email ? (
             <Link to="/signin" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"

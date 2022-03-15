@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import Context from './Context/index';
 import Routes from 'Routes';
 import Page from 'components/Page';
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -10,10 +9,11 @@ import 'slick-carousel/slick/slick-theme.css';
 import 'react-image-lightbox/style.css';
 import 'aos/dist/aos.css';
 import { CircularProgress } from '@mui/material';
-
+import { Provider } from 'react-redux';
+import store from './store';
 ReactDOM.render(
   <BrowserRouter>
-    <Context>
+    <Provider store={store}>
       <Suspense
         fallback={
           <CircularProgress
@@ -32,7 +32,7 @@ ReactDOM.render(
           <Routes />
         </Page>
       </Suspense>
-    </Context>
+    </Provider>
   </BrowserRouter>,
   document.getElementById('root'),
 );

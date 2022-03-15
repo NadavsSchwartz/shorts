@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,19 +10,19 @@ import DarkLogo from '../../../../assets/DarkLogo.png';
 import ThemeModeToggler from 'components/ThemeModeToggler';
 import { Avatar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { userContext } from 'Context';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
   const theme = useTheme();
   const { mode } = theme.palette;
-  const userObject = useContext(userContext);
-
+  const userDetails = useSelector((state) => state.userDetails);
+  const {   user } = userDetails;
   const logout = () => {
     axios
       .get('http://localhost:4000/auth/logout', { withCredentials: true })
       .then((res) => {
-        if (res.data === 'success') window.location.href = '/';
+        if (res.data) window.location.href = '/';
       });
   };
 
@@ -36,7 +36,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
       <Box
         display={'flex'}
         component="a"
-        href={userObject && !userObject.email ? '/' : '/home'}
+        href={user && !user.email ? '/' : '/home'}
         title="Shorts"
         width={{ xs: 100, md: 120 }}
       >
@@ -57,7 +57,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
         </Box>
 
         <Box marginLeft={4}>
-          {userObject && !userObject.email ? (
+          {user && !user.email ? (
             <Link to="/signin" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"
@@ -78,7 +78,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
             >
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <Box marginRight={2}>
-                  <Avatar src={userObject.avatar} />
+                  <Avatar src={user.avatar} />
                 </Box>
               </Box>
 
@@ -101,7 +101,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
       </Box>
       <Box sx={{ display: { xs: 'flex', md: 'none' } }} alignItems={'center'}>
         <Box marginRight={2}>
-          <Avatar src={userObject.avatar} />
+          <Avatar src={user.avatar} />
         </Box>
         <Button
           onClick={() => onSidebarOpen()}
