@@ -10,13 +10,37 @@ const { checkWebURL } = uri;
 // @desc    delete Shortened Link Analytics
 // @route   DELETE /url
 export const deleteShortLink = async (req, res) => {
+	console.log(req.user);
+	const { shortUrl } = req.body;
+	if (!shortUrl) return res.status(404).json({ message: 'no link found' });
 	const isShortLink = await ShortLink.findOne({
-		shortUrl: req.params.shortUrl,
+		shortUrl: shortUrl,
 	});
-
 	if (isShortLink) {
 		await isShortLink.remove();
-		return res.status(200).json({ message: 'Short Link removed' });
+		const Analytics = await ShortLink.find({ user: req.user._id }).populate({
+			path: 'analytics',
+			options: { sort: { created_at: -1 } },
+		});
+		let totalClicks = 0;
+
+		await Analytics.forEach(async (ShortLink) => {
+			return (totalClicks =
+				(await ShortLink.analytics.TotalClicks) + totalClicks);
+		});
+		const totalLinks = Analytics.length;
+		let AllLocations = [];
+		await Analytics.map((Link) => {
+			if (Link.analytics.location.length !== 0)
+				AllLocations.push(Link.analytics.location);
+		});
+
+		return res.status(200).json({
+			Analytics: Analytics,
+			TotalClicks: totalClicks,
+			TotalLinks: totalLinks,
+			AllLocations: AllLocations,
+		});
 	} else {
 		res.status(404);
 		return new Error('Short Link not found');
@@ -31,24 +55,19 @@ export const createNewShortenedLink = async (req, res) => {
 	try {
 		const { longUrl } = req.body;
 
+		// checks if there is long url within the request body AND that the long url is valid
 		if (longUrl && checkWebURL(longUrl).valid === true) {
 		}
 
-		const { status } = await axios.head(longUrl, { timeout: 5000 });
-
-		// check if link is in the database
-		// urlData = await ShortLink.findOne({ longUrl: longUrl });
-		if (status !== 200) {
-			return res.status(401).json({ error: status });
-		}
-		// if (!urlData) {
+		//generate unique 7 character long id for the short url
 		const newUrlId = await nanoid(7);
 
+		//checks if the short URL id already exists to avoid duplicate
 		const isUrlIdExists = await ShortLink.find({ urlId: newUrlId });
 		if (isUrlIdExists.length === 0);
 		{
 			const shortUrl = shortBaseUrl + '/' + newUrlId;
-			const siteIcon = `https://f1.allesedv.com/36/${urlOrigin}`;
+			const siteIcon = `${urlOrigin}/favicon.ico`;
 			const newAnalytics = new Analytics();
 			await newAnalytics.save();
 			const itemToBeSaved = {
@@ -66,9 +85,31 @@ export const createNewShortenedLink = async (req, res) => {
 			await newAnalytics.updateOne({ shortLink: NewShortLink._id });
 			await newAnalytics.save();
 
-			await NewShortLink.populate('analytics');
+			const ShortLinksAnalytics = await ShortLink.find({
+				user: req.user._id,
+			}).populate({
+				path: 'analytics',
+				options: { sort: { created_at: -1 } },
+			});
+			let totalClicks = 0;
 
-			res.status(200).json(NewShortLink);
+			await ShortLinksAnalytics.forEach(async (ShortLink) => {
+				return (totalClicks =
+					(await ShortLink.analytics.TotalClicks) + totalClicks);
+			});
+			const totalLinks = ShortLinksAnalytics.length;
+			let AllLocations = [];
+			await ShortLinksAnalytics.map((Link) => {
+				if (Link.analytics.location.length !== 0)
+					AllLocations.push(Link.analytics.location);
+			});
+
+			return res.status(200).json({
+				Analytics: ShortLinksAnalytics,
+				TotalClicks: totalClicks,
+				TotalLinks: totalLinks,
+				AllLocations: AllLocations,
+			});
 		}
 	} catch (error) {
 		console.error(error);
@@ -89,8 +130,9 @@ export const redirectToShortenedLink = async (req, res) => {
 			});
 		if (foundShortenedLink) {
 			const { data } = await axios.get(
-				`https://ipinfo.io/json/?${req.ip}?token=560f38041f5660`
+				`https://ipinfo.io/json?token=${process.env.IPINFO_TOKEN}`
 			);
+			console.log(data);
 			const currentTime = new Date().toISOString().split('T', 1)[0];
 
 			await Analytics.findOneAndUpdate(
@@ -102,7 +144,7 @@ export const redirectToShortenedLink = async (req, res) => {
 						location: data,
 						clicks: { date: currentTime },
 					},
-					$inc: { TotalClicks: 1 },
+					$inc: { totalClicks: 1 },
 				},
 				{ upsert: true, returnDocument: 'after' }
 			);
