@@ -22,7 +22,7 @@ import { visuallyHidden } from '@mui/utils';
 import { useDispatch } from 'react-redux';
 import { deleteShortLink } from 'store/actions/shortLinkAcionts';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Alert, Button, Snackbar } from '@mui/material';
+import { Alert, Button, Grid, Snackbar } from '@mui/material';
 import TrafficByState from '../TrafficByState';
 
 function descendingComparator(a, b, orderBy) {
@@ -279,7 +279,7 @@ export default function EnhancedTable({ AllShortLinks }) {
         />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 750, tableLayout: 'auto' }}
             aria-labelledby="tableTitle"
             size="medium"
           >
@@ -354,10 +354,33 @@ export default function EnhancedTable({ AllShortLinks }) {
                           <ContentCopyIcon />
                         </Button>
                       </TableCell>
-                      <TableCell sx={{ width: '250px' }}>
-                        <TrafficByState
-                          AllLocations={Link.analytics.location}
-                        />
+                      <TableCell sx={{ width: '250px' }} align="right">
+                        {Link && Link.analytics.location.length !== 0 ? (
+                          <TrafficByState
+                            AllLocations={Link.analytics.location}
+                          />
+                        ) : (
+                          <Grid container>
+                            <Grid
+                              container
+                              direction="row"
+                              justifyContent="center"
+                              alignItems="center"
+                            >
+                              <img
+                                src="https://png2.cleanpng.com/sh/dfd8b508ed7f4b2c24498078edc7fed7/L0KzQYm4UcEzN6d2eZH0aYP2gLBuTfNwdaF6jNd7LXnmf7B6TfFld5NqRdt1bIX2hMPolP9zNZJzed5EdHnmg37sjvNieKR6Rdl7Znnmf37rhb1jaaN3eeU2aXPyfrF6TfdzaaVui59tZT3xdbj2gBlwe146etcENHblR4boWPJlOF87SKYEMki7SIK8VMIxOWcATaM8N0C8PsH1h5==/kisspng-computer-icons-adobe-illustrator-analytics-encapsu-grfico-de-barras-iconos-gratis-de-negocios-5be94fb75a8bd0.6049288815420169513709.png"
+                                alt="no analytics icon"
+                                width={100}
+                              />
+                            </Grid>
+                            <Grid container sx={{ width: '100%' }}>
+                              <Typography variant="caption">
+                                {' '}
+                                Analytics appear after links are visited
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

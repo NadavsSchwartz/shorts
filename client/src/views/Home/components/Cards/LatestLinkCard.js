@@ -10,18 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 import { ReactComponent as NoLinksSvg } from '../../../../assets/NoLinksSvg.svg';
-import {
-  FacebookIcon,
-  FacebookShareButton,
-  RedditIcon,
-  RedditShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton,
-} from 'react-share';
+
+import { SocialShare } from '../SocialShare';
 
 export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
   const timeAgo = format(
@@ -91,21 +81,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
             >
               <Grid container sx={{ justifyContent: 'space-between' }}>
                 <Grid item sx={{ pt: 3 }}>
-                  <TwitterShareButton url={data.longUrl}>
-                    <TwitterIcon size={36} round={true} />
-                  </TwitterShareButton>{' '}
-                  <FacebookShareButton url={data.longUrl}>
-                    <FacebookIcon size={36} round={true} />
-                  </FacebookShareButton>{' '}
-                  <WhatsappShareButton title={data.longUrl}>
-                    <WhatsappIcon size={36} round={true} />
-                  </WhatsappShareButton>{' '}
-                  <TelegramShareButton url={data.longUrl}>
-                    <TelegramIcon size={36} round={true} />
-                  </TelegramShareButton>{' '}
-                  <RedditShareButton url={data.longUrl}>
-                    <RedditIcon size={36} round={true} />
-                  </RedditShareButton>{' '}
+                  <SocialShare data={data && data} />
                 </Grid>
                 <Grid item sx={{ display: { sm: 'none', md: 'block' } }}>
                   <Grid item sx={{ pl: 4 }}>
