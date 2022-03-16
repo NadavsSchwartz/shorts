@@ -15,7 +15,6 @@ const Form = () => {
     <Box
       padding={{ xs: 3, sm: 5 }}
       margin={{ md: 6 }}
-      width={1}
       component={Card}
       boxShadow={1}
     >
