@@ -1,7 +1,14 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { format } from 'timeago.js';
-import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { ReactComponent as NoLinksSvg } from '../../../../assets/NoLinksSvg.svg';
 import {
   FacebookIcon,
@@ -16,37 +23,36 @@ import {
   WhatsappShareButton,
 } from 'react-share';
 
-const useWidth = () => {
-  const [width, setWidth] = React.useState(window.innerWidth);
-  React.useEffect(() => {
-    const onResize = () => {
-      setWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-  return width;
-};
-
-export const LatestLinkCard = ({ LatestLink, ...props }) => {
-  const width = useWidth();
-
+export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
   const timeAgo = format(
     LatestLink && LatestLink.length !== 0 ? LatestLink[0].createdAt : '',
   );
   const data = LatestLink && LatestLink.length !== 0 ? LatestLink[0] : null;
 
   return (
-    <Card {...props} sx={{ height: '100%' }}>
-      <CardContent>
-        {data === null ? (
-          <Box sx={{ textAlign: 'center' }}>
-            <NoLinksSvg />
-
-            <Typography> Start by creating Your first Short Link</Typography>
-          </Box>
-        ) : (
-          <>
+    <Card sx={{ height: '100%' }}>
+      {loading ? (
+        <>
+          <Skeleton
+            variant="text"
+            sx={{ bgcolor: theme.palette.primary.main }}
+          />
+          <Skeleton
+            variant="circular"
+            width={40}
+            height={40}
+            sx={{ bgcolor: theme.palette.primary.main }}
+          />
+          <Skeleton
+            variant="rectangular"
+            width={210}
+            height={118}
+            sx={{ bgcolor: theme.palette.primary.main }}
+          />
+        </>
+      ) : data !== null ? (
+        <>
+          <CardContent>
             <Grid container sx={{ justifyContent: 'space-between' }}>
               <Grid item>
                 <Typography color="textPrimary" variant="body4">
@@ -57,7 +63,7 @@ export const LatestLinkCard = ({ LatestLink, ...props }) => {
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    width: width * 0.25,
+                    width: '250px',
                   }}
                 >
                   <a
@@ -73,7 +79,9 @@ export const LatestLinkCard = ({ LatestLink, ...props }) => {
                 </Grid>
               </Grid>
 
-              <Grid item>Created: {timeAgo}</Grid>
+              <Grid item sx={{ display: { sm: 'none', md: 'block' } }}>
+                Created: {timeAgo}
+              </Grid>
             </Grid>
             <Box
               sx={{
@@ -97,9 +105,9 @@ export const LatestLinkCard = ({ LatestLink, ...props }) => {
                   </TelegramShareButton>{' '}
                   <RedditShareButton url={data.longUrl}>
                     <RedditIcon size={36} round={true} />
-                  </RedditShareButton>
+                  </RedditShareButton>{' '}
                 </Grid>
-                <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Grid item sx={{ display: { sm: 'none', md: 'block' } }}>
                   <Grid item sx={{ pl: 4 }}>
                     <Typography color="textPrimary" variant="h4">
                       {data && data.analytics.TotalClicks}
@@ -111,9 +119,14 @@ export const LatestLinkCard = ({ LatestLink, ...props }) => {
                 </Grid>
               </Grid>
             </Box>
-          </>
-        )}
-      </CardContent>
+          </CardContent>
+        </>
+      ) : (
+        <Box sx={{ textAlign: 'center', mt: '15px' }}>
+          <NoLinksSvg />
+          <Typography> Start by creating Your first Short Link</Typography>
+        </Box>
+      )}
     </Card>
   );
 };

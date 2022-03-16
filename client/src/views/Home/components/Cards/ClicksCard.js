@@ -34,7 +34,9 @@ export const TotalClicks = ({ TotalClicks, ...props }) => {
                 backgroundColor: `${
                   Percentage < 0
                     ? 'error.main'
-                    : Percentage === 0 ? '' : 'success.main'
+                    : Percentage === 0
+                      ? ''
+                      : 'success.main'
                 }`,
                 height: 56,
                 width: 56,
