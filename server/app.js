@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'development') {
 await connectDB();
 
 app.use(express.json());
-
+app.set('trust proxy', true);
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //Add the client URL to the CORS policy

@@ -2,28 +2,35 @@ import ShortLink from '../models/shortLinkModel.js';
 
 export const getUserStats = async (req, res) => {
 	try {
-		const Analytics = await ShortLink.find({ user: req.user._id }).populate({
+		const ShortLinksAnalytics = await ShortLink.find({
+			user: req.user._id,
+		}).populate({
 			path: 'analytics',
 			options: { sort: { created_at: -1 } },
 		});
-		let totalClicks = 0;
 
-		await Analytics.forEach(async (ShortLink) => {
-			return (totalClicks =
-				(await ShortLink.analytics.TotalClicks) + totalClicks);
+		//iterate through each click and calculate total clicks for ALL short links
+		let AllClicks = 0;
+		await ShortLinksAnalytics.forEach(async (ShortLink) => {
+			return (AllClicks = (await ShortLink.analytics.totalClicks) + AllClicks);
 		});
-		const totalLinks = Analytics.length;
+
+		//iterate through each location and and push to AllLocations all the non-empty location data
 		let AllLocations = [];
-		await Analytics.map((Link) => {
+		await ShortLinksAnalytics.map((Link) => {
 			if (Link.analytics.location.length !== 0)
 				AllLocations.push(Link.analytics.location);
 		});
 
+		const { location, clicks } = ShortLinksAnalytics;
+
 		return res.status(200).json({
-			Analytics: Analytics,
-			TotalClicks: totalClicks,
-			TotalLinks: totalLinks,
+			Analytics: ShortLinksAnalytics,
+			TotalClicks: AllClicks,
+			TotalLinks: ShortLinksAnalytics.length,
 			AllLocations: AllLocations,
+			locations: location,
+			clicks: clicks,
 		});
 	} catch (error) {
 		console.log(error);
