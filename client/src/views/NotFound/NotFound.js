@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -9,14 +9,15 @@ import Grid from '@mui/material/Grid';
 
 import Main from 'layouts/Main';
 import Container from 'components/Container';
-import { userContext } from 'Context';
+import { useSelector } from 'react-redux';
 
 const NotFound = () => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,
   });
-  const userObject = useContext(userContext);
+  const userDetails = useSelector((state) => state.userDetails);
+  const { user } = userDetails;
   return (
     <Main>
       <Box
@@ -67,7 +68,7 @@ const NotFound = () => {
                   display={'flex'}
                   justifyContent={{ xs: 'center', md: 'flex-start' }}
                 >
-                  {userObject && !userObject.email ? (
+                  {user && !user.email ? (
                     <Button
                       component={Link}
                       variant="contained"
