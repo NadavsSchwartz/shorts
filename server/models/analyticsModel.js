@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const analyticsSchema = mongoose.Schema(
 	{
-		TotalClicks: {
+		totalClicks: {
 			type: Number,
 			required: true,
 			default: 0,

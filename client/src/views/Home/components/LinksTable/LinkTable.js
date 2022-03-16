@@ -23,6 +23,7 @@ import { useDispatch } from 'react-redux';
 import { deleteShortLink } from 'store/actions/shortLinkAcionts';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Alert, Button, Snackbar } from '@mui/material';
+import TrafficByState from '../TrafficByState';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -69,6 +70,10 @@ const headCells = [
   {
     id: 'shortUrl',
     label: 'Short Url',
+  },
+  {
+    id: 'location',
+    label: 'Location Data',
   },
 ];
 
@@ -257,7 +262,7 @@ export default function EnhancedTable({ AllShortLinks }) {
     SetSuccessCopyUrlMessage(false);
   };
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', height: '100%' }}>
       <Snackbar
         open={successCopyUrlMessage}
         autoHideDuration={6000}
@@ -267,7 +272,7 @@ export default function EnhancedTable({ AllShortLinks }) {
           Successfully copied the short url!
         </Alert>
       </Snackbar>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper sx={{ height: '100%', mb: 2 }}>
         <EnhancedTableToolbar
           numSelected={selected.length}
           handleDelete={handleDelete}
@@ -290,8 +295,8 @@ export default function EnhancedTable({ AllShortLinks }) {
               {/*for IE11 support  */}
               {stableSort(AllShortLinks, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.shortUrl);
+                .map((Link, index) => {
+                  const isItemSelected = isSelected(Link.shortUrl);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -300,12 +305,12 @@ export default function EnhancedTable({ AllShortLinks }) {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.shortUrl}
+                      key={Link.shortUrl}
                       selected={isItemSelected}
                     >
                       <TableCell
                         padding="checkbox"
-                        onClick={(event) => handleClick(event, row.shortUrl)}
+                        onClick={(event) => handleClick(event, Link.shortUrl)}
                       >
                         <Checkbox
                           color="primary"
@@ -325,28 +330,34 @@ export default function EnhancedTable({ AllShortLinks }) {
                             maxWidth: '200px',
                           }}
                         >
-                          {row && row.longUrl}
+                          {Link && Link.longUrl}
                         </Typography>
                       </TableCell>
                       <TableCell align="left">
-                        {row.analytics.TotalClicks}
+                        {Link.analytics.totalClicks}
                       </TableCell>
 
-                      <TableCell>{row.createdAt.substring(0, 10)}</TableCell>
+                      <TableCell>{Link.createdAt.substring(0, 10)}</TableCell>
                       <TableCell>
-                        {row.shortUrl}
                         <Button
                           onClick={() =>
-                            navigator.clipboard.writeText(row.shortUrl)
+                            navigator.clipboard
+                              .writeText(Link.shortUrl)
+                              .then(() =>
+                                SetSuccessCopyUrlMessage(
+                                  !successCopyUrlMessage,
+                                ),
+                              )
                           }
                         >
-                          <ContentCopyIcon
-                            width={5}
-                            onClick={() =>
-                              SetSuccessCopyUrlMessage(!successCopyUrlMessage)
-                            }
-                          />
+                          {Link.shortUrl}
+                          <ContentCopyIcon />
                         </Button>
+                      </TableCell>
+                      <TableCell sx={{ width: '250px' }}>
+                        <TrafficByState
+                          AllLocations={Link.analytics.location}
+                        />
                       </TableCell>
                     </TableRow>
                   );

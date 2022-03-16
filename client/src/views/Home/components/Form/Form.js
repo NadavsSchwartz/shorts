@@ -30,7 +30,7 @@ const Form = (props) => {
 
     try {
       const result = url.match(urlRegex);
-      console.log(result);
+
       if (result !== null) {
         dispatch(createShortLink(url));
       } else {

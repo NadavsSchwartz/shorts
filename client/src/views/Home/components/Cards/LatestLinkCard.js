@@ -30,7 +30,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
   const data = LatestLink && LatestLink.length !== 0 ? LatestLink[0] : null;
 
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: '97%' }}>
       {loading ? (
         <>
           <Skeleton
@@ -110,7 +110,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
                 <Grid item sx={{ display: { sm: 'none', md: 'block' } }}>
                   <Grid item sx={{ pl: 4 }}>
                     <Typography color="textPrimary" variant="h4">
-                      {data && data.analytics.TotalClicks}
+                      {data && data.analytics.totalClicks}
                     </Typography>
                   </Grid>
                   <Typography color="textSecondary" variant="overline">
