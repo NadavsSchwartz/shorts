@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -6,12 +6,21 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Main from 'layouts/Main';
 import Container from 'components/Container';
 import { Form } from './components';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Signin = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,
   });
+  const userDetails = useSelector((state) => state.userDetails);
+  const { loading, user } = userDetails;
+
+  useEffect(() => {
+    if (!loading && user && user.email) navigate('/home');
+  }, []);
 
   return (
     <Main>

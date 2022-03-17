@@ -1,11 +1,19 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Main from 'layouts/Main';
 import Container from 'components/Container';
 import { GetStarted, Features, Services, Hero, QuickStart } from './components';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 const Landing = () => {
   const theme = useTheme();
+  const userDetails = useSelector((state) => state.userDetails);
+  const { loading, user } = userDetails;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && user && user.email) navigate('/home');
+  }, []);
   return (
     <Suspense fallback={<div>Loading</div>}>
       <Box sx={{ overflowX: 'hidden' }}>

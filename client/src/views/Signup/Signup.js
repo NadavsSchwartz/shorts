@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -7,12 +7,19 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Main from 'layouts/Main';
 import Container from 'components/Container';
 import { Form } from './components';
-
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 const SignupSimple = () => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true,
   });
+  const userDetails = useSelector((state) => state.userDetails);
+  const { loading, user } = userDetails;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && user && user.email) navigate('/home');
+  }, []);
 
   return (
     <Main>
