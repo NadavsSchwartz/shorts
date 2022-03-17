@@ -106,7 +106,7 @@ export const createNewShortenedLink = async (req, res) => {
 
 			return res.status(200).json({
 				Analytics: ShortLinksAnalytics,
-				TotalClicks: totalClicks,
+				TotalClicks: totalClicks || 0,
 				TotalLinks: totalLinks,
 				AllLocations: AllLocations,
 			});
