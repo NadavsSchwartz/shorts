@@ -18,27 +18,41 @@ export const deleteShortLink = async (req, res) => {
 	});
 	if (isShortLink) {
 		await isShortLink.remove();
-		const Analytics = await ShortLink.find({ user: req.user._id }).populate({
+		const ShortLinksAnalytics = await ShortLink.find({
+			user: req.user._id,
+		}).populate({
 			path: 'analytics',
 			options: { sort: { created_at: -1 } },
 		});
-		let totalClicks = 0;
+		let AllClicks = 0;
 
-		await Analytics.forEach(async (ShortLink) => {
-			return (totalClicks =
-				(await ShortLink.analytics.TotalClicks) + totalClicks);
-		});
-		const totalLinks = Analytics.length;
-		let AllLocations = [];
-		await Analytics.map((Link) => {
+		const modifiedAnalytics = [];
+
+		await ShortLinksAnalytics.map((Link) => {
+			// calculate total clicks of all links for easy management in front end
+			AllClicks = Link.analytics.totalClicks + AllClicks;
+
+			// calculate all locations of each non empty clicks location for easy management in front end
 			if (Link.analytics.location.length !== 0)
 				AllLocations.push(Link.analytics.location);
+
+			// modify the array of object of ShortLinks and Analytics for easier management in front end
+			modifiedAnalytics.push({
+				id: Link._id,
+				shortUrl: Link.shortUrl,
+				siteIcon: Link.siteIcon,
+				longUrl: Link.longUrl,
+				createdAt: Link.createdAt,
+				totalClicks: Link.analytics.totalClicks,
+				clicks: Link.analytics.clicks,
+				location: Link.analytics.location,
+			});
 		});
 
 		return res.status(200).json({
-			Analytics: Analytics,
-			TotalClicks: totalClicks,
-			TotalLinks: totalLinks,
+			Analytics: modifiedAnalytics,
+			TotalClicks: AllClicks || 0,
+			TotalLinks: modifiedAnalytics.length,
 			AllLocations: AllLocations,
 		});
 	} else {
@@ -91,23 +105,38 @@ export const createNewShortenedLink = async (req, res) => {
 				path: 'analytics',
 				options: { sort: { created_at: -1 } },
 			});
-			let totalClicks = 0;
 
-			await ShortLinksAnalytics.forEach(async (ShortLink) => {
-				return (totalClicks =
-					(await ShortLink.analytics.TotalClicks) + totalClicks);
-			});
-			const totalLinks = ShortLinksAnalytics.length;
+			let AllClicks = 0;
+
 			let AllLocations = [];
+
+			const modifiedAnalytics = [];
+
 			await ShortLinksAnalytics.map((Link) => {
+				// calculate total clicks of all links for easy management in front end
+				AllClicks = Link.analytics.totalClicks + AllClicks;
+
+				// calculate all locations of each non empty clicks location for easy management in front end
 				if (Link.analytics.location.length !== 0)
 					AllLocations.push(Link.analytics.location);
+
+				// modify the array of object of ShortLinks and Analytics for easier management in front end
+				modifiedAnalytics.push({
+					id: Link._id,
+					shortUrl: Link.shortUrl,
+					siteIcon: Link.siteIcon,
+					longUrl: Link.longUrl,
+					createdAt: Link.createdAt,
+					totalClicks: Link.analytics.totalClicks,
+					clicks: Link.analytics.clicks,
+					location: Link.analytics.location,
+				});
 			});
 
 			return res.status(200).json({
-				Analytics: ShortLinksAnalytics,
-				TotalClicks: totalClicks || 0,
-				TotalLinks: totalLinks,
+				Analytics: modifiedAnalytics,
+				TotalClicks: AllClicks || 0,
+				TotalLinks: modifiedAnalytics.length,
 				AllLocations: AllLocations,
 			});
 		}

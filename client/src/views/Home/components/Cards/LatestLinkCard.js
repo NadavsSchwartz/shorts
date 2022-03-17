@@ -14,11 +14,10 @@ import { ReactComponent as NoLinksSvg } from '../../../../assets/NoLinksSvg.svg'
 import { SocialShare } from '../SocialShare';
 
 export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
+  console.log(LatestLink);
   const timeAgo = format(
-    LatestLink && LatestLink.length !== 0 ? LatestLink[0].createdAt : '',
+    LatestLink && LatestLink[0] ? LatestLink[0].createdAt : '',
   );
-  const data = LatestLink && LatestLink.length !== 0 ? LatestLink[0] : null;
-
   return (
     <Card sx={{ height: '97%' }}>
       {loading ? (
@@ -40,7 +39,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
             sx={{ bgcolor: theme.palette.primary.main }}
           />
         </>
-      ) : data !== null ? (
+      ) : LatestLink !== null ? (
         <>
           <CardContent>
             <Grid container sx={{ justifyContent: 'space-between' }}>
@@ -57,12 +56,16 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
                   }}
                 >
                   <a
-                    href={data && data.longUrl}
+                    href={
+                      LatestLink && LatestLink[0] ? LatestLink[0].longUrl : ''
+                    }
                     style={{ textDecoration: 'none' }}
                   >
                     <Typography noWrap color="textPrimary" variant="body4">
                       <Box component="span" fontWeight="fontWeightMedium">
-                        {data && data.longUrl}
+                        {LatestLink && LatestLink[0]
+                          ? LatestLink[0].longUrl
+                          : ''}
                       </Box>{' '}
                     </Typography>
                   </a>{' '}
@@ -81,12 +84,16 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
             >
               <Grid container sx={{ justifyContent: 'space-between' }}>
                 <Grid item sx={{ pt: 3 }}>
-                  <SocialShare data={data && data} />
+                  <SocialShare
+                    data={LatestLink && LatestLink[0] ? LatestLink[0] : ''}
+                  />
                 </Grid>
                 <Grid item sx={{ display: { sm: 'none', md: 'block' } }}>
                   <Grid item sx={{ pl: 4 }}>
                     <Typography color="textPrimary" variant="h4">
-                      {data && data.analytics.totalClicks}
+                      {LatestLink && LatestLink[0]
+                        ? LatestLink[0].totalClicks
+                        : ''}
                     </Typography>
                   </Grid>
                   <Typography color="textSecondary" variant="overline">

@@ -56,24 +56,26 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'longUrl',
-    label: 'Destination URL',
+    id: 'location',
+    label: 'Location Data',
+  },
+  {
+    id: 'createdAt',
+    label: 'Date',
+    responsive: true,
   },
   {
     id: 'totalClicks',
     label: 'Clicks',
   },
   {
-    id: 'createdAt',
-    label: 'Date',
-  },
-  {
     id: 'shortUrl',
     label: 'Short Url',
   },
   {
-    id: 'location',
-    label: 'Location Data',
+    id: 'longUrl',
+    label: 'Destination URL',
+    responsive: true,
   },
 ];
 
@@ -99,17 +101,17 @@ function EnhancedTableHead(props) {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
           />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={'left'}
+            align={headCell.id === 'longUrl' ? 'left' : 'center'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{
+              display: headCell.responsive && { xs: 'none', md: 'table-cell' },
+            }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -321,44 +323,9 @@ export default function EnhancedTable({ AllShortLinks }) {
                         />
                       </TableCell>
 
-                      <TableCell align="left">
-                        {' '}
-                        <Typography
-                          sx={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            maxWidth: '200px',
-                          }}
-                        >
-                          {Link && Link.longUrl}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        {Link.analytics.totalClicks}
-                      </TableCell>
-
-                      <TableCell>{Link.createdAt.substring(0, 10)}</TableCell>
-                      <TableCell>
-                        <Button
-                          onClick={() =>
-                            navigator.clipboard
-                              .writeText(Link.shortUrl)
-                              .then(() =>
-                                SetSuccessCopyUrlMessage(
-                                  !successCopyUrlMessage,
-                                ),
-                              )
-                          }
-                        >
-                          {Link.shortUrl}
-                          <ContentCopyIcon />
-                        </Button>
-                      </TableCell>
-                      <TableCell sx={{ width: '250px' }} align="right">
-                        {Link && Link.analytics.location.length !== 0 ? (
-                          <TrafficByState
-                            AllLocations={Link.analytics.location}
-                          />
+                      <TableCell sx={{ width: '300px' }} align="center">
+                        {Link && Link.location.length !== 0 ? (
+                          <TrafficByState AllLocations={Link.location} />
                         ) : (
                           <Grid container>
                             <Grid
@@ -381,6 +348,44 @@ export default function EnhancedTable({ AllShortLinks }) {
                             </Grid>
                           </Grid>
                         )}
+                      </TableCell>
+                      <TableCell
+                        sx={{ display: { xs: 'none', md: 'table-cell' } }}
+                        align="center"
+                      >
+                        {Link.createdAt.substring(0, 10)}
+                      </TableCell>
+                      <TableCell align="center">{Link.totalClicks}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          onClick={() =>
+                            navigator.clipboard
+                              .writeText(Link.shortUrl)
+                              .then(() =>
+                                SetSuccessCopyUrlMessage(
+                                  !successCopyUrlMessage,
+                                ),
+                              )
+                          }
+                        >
+                          {Link.shortUrl}
+                          <ContentCopyIcon />
+                        </Button>
+                      </TableCell>
+                      <TableCell
+                        sx={{ display: { xs: 'none', md: 'table-cell' } }}
+                      >
+                        {' '}
+                        <Typography
+                          noWrap
+                          sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '300px',
+                          }}
+                        >
+                          {Link && Link.longUrl}
+                        </Typography>
                       </TableCell>
                     </TableRow>
                   );

@@ -11,26 +11,37 @@ export const getUserStats = async (req, res) => {
 
 		//iterate through each click and calculate total clicks for ALL short links
 		let AllClicks = 0;
-		await ShortLinksAnalytics.forEach(async (ShortLink) => {
-			return (AllClicks = (await ShortLink.analytics.totalClicks) + AllClicks);
-		});
 
 		//iterate through each location and and push to AllLocations all the non-empty location data
 		let AllLocations = [];
+
+		const modifiedAnalytics = [];
 		await ShortLinksAnalytics.map((Link) => {
+			// calculate total clicks of all links for easy management in front end
+			AllClicks = Link.analytics.totalClicks + AllClicks;
+
+			// calculate all locations of each non empty clicks location for easy management in front end
 			if (Link.analytics.location.length !== 0)
 				AllLocations.push(Link.analytics.location);
+
+			// modify the array of object of ShortLinks and Analytics for easier management in front end
+			modifiedAnalytics.push({
+				id: Link._id,
+				shortUrl: Link.shortUrl,
+				siteIcon: Link.siteIcon,
+				longUrl: Link.longUrl,
+				createdAt: Link.createdAt,
+				totalClicks: Link.analytics.totalClicks,
+				clicks: Link.analytics.clicks,
+				location: Link.analytics.location,
+			});
 		});
 
-		const { location, clicks } = ShortLinksAnalytics;
-
 		return res.status(200).json({
-			Analytics: ShortLinksAnalytics,
-			TotalClicks: AllClicks,
-			TotalLinks: ShortLinksAnalytics.length,
+			Analytics: modifiedAnalytics,
+			TotalClicks: AllClicks || 0,
+			TotalLinks: modifiedAnalytics.length,
 			AllLocations: AllLocations,
-			locations: location,
-			clicks: clicks,
 		});
 	} catch (error) {
 		console.log(error);
