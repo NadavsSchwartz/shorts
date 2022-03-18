@@ -35,10 +35,10 @@ export const TrafficByDevice = ({ AllLocations }) => {
   const a = AllLocations && AllLocations;
   if (a) {
     a.forEach((linkData, index) => {
-      if (!unique[a[index].country]) {
-        unique[a[index].country] = 1;
+      if (!unique[a[index].region]) {
+        unique[a[index].region] = 1;
       } else {
-        unique[a[index].country]++;
+        unique[a[index].region]++;
       }
     });
   }
@@ -53,8 +53,7 @@ export const TrafficByDevice = ({ AllLocations }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: true,
-        position: 'left',
+        display: false,
       },
     },
   };
