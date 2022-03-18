@@ -5,23 +5,20 @@ import { useTheme } from '@mui/material/styles';
 import LightLogo from '../../../../../../assets/LightLogo.png';
 import DarkLogo from '../../../../../../assets/DarkLogo.png';
 import { Typography } from '@mui/material';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { userLogOut } from 'store/actions/userActions';
 const SidebarNav = () => {
   const theme = useTheme();
   const { mode } = theme.palette;
   const userDetails = useSelector((state) => state.userDetails);
   const { user } = userDetails;
 
-  const logout = () => {
-    axios
-      .get('http://localhost:4000/auth/logout', { withCredentials: true })
-      .then((res) => {
-        if (res.data === 'success') window.location.href = '/';
-      });
-  };
+  const dispatch = useDispatch();
 
+  const logout = () => {
+    dispatch(userLogOut());
+  };
   return (
     <Box>
       <Box width={1} paddingX={2} paddingY={1}>
@@ -72,13 +69,14 @@ const SidebarNav = () => {
               </Button>
             </Link>
           ) : (
-            <div onClick={logout}>
+            <div>
               <Button
                 variant="contained"
                 color="primary"
                 target="blank"
                 size="large"
                 fullWidth
+                onClick={logout}
               >
                 Log out
               </Button>

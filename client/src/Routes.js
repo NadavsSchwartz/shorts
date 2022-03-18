@@ -10,6 +10,7 @@ const Routes = () => {
   const { loading, user } = userDetails;
   useEffect(() => {
     dispatch(getUserDetails());
+    if (user) dispatch(getUserStats());
   }, []);
 
   return (

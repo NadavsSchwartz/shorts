@@ -47,9 +47,9 @@ const GetStarted = () => {
           color="primary"
           size="large"
           fullWidth={isMd ? false : true}
-          href={'#short'}
+          href={'/signin'}
         >
-          Get Started
+          Sign in
         </Button>
         <Box
           marginTop={{ xs: 2, sm: 0 }}

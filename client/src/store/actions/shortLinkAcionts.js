@@ -3,14 +3,14 @@ import axios from 'axios';
 export const DELETE_LINK_REQUEST = 'DELETE_LINK_REQUEST';
 export const DELETE_LINK_SUCCESS = 'DELETE_LINK_SUCCESS';
 export const DELETE_LINK_FAIL = 'DELETE_LINK_FAIL';
-
+export const RESET_ERROR_MESSAGE = 'RESET_ERROR_MESSAGE';
 export const deleteShortLink = (selectedLinksToDelete) => async (dispatch) => {
   try {
     dispatch({
       type: DELETE_LINK_REQUEST,
     });
 
-    const { data } = await axios.delete('http://localhost:4000/url', {
+    const { data } = await axios.delete('http://localhost:4000/delete/url', {
       withCredentials: true,
       data: { shortUrl: selectedLinksToDelete },
     });
@@ -21,12 +21,10 @@ export const deleteShortLink = (selectedLinksToDelete) => async (dispatch) => {
     });
   } catch (error) {
     const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
+      error.response && error.response.data
+        ? error.response.data
         : error.message;
-    if (message === 'Not authorized, token failed') {
-      console.log(error);
-    }
+
     dispatch({
       type: DELETE_LINK_FAIL,
       payload: message,
@@ -58,12 +56,9 @@ export const createShortLink = (longUrlToShorten) => async (dispatch) => {
     });
   } catch (error) {
     const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
+      error.response && error.response.data
+        ? error.response.data
         : error.message;
-    if (message === 'Not authorized, token failed') {
-      console.log(error);
-    }
     dispatch({
       type: CREATE_LINK_FAIL,
       payload: message,

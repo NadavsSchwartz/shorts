@@ -17,14 +17,14 @@ const mock = [
     suffix: '+',
   },
   {
-    title: 200,
-    subtitle: 'links can be created daily as a user, or up to 30 as a guest.',
-    suffix: '',
-  },
-  {
     title: 99,
     subtitle: '99% of our customers rated Shorts 5-star for our service.',
     suffix: '%',
+  },
+  {
+    title: 100,
+    subtitle: 'links can be created FREELY every day as a user, or up to 30 as a guest.',
+    suffix: '',
   },
 ];
 

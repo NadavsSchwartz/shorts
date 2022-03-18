@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 const mock = [
   {
     title: 'Anonimity First.',
-    subtitle: `On top of making your life easier, We dont collect any data about you, your browser or your location. `,
+    subtitle: `On top of making your life easier, We dont collect any data about you, or your activity, and we don't sell or share data any data about you.  `,
     icon: (
       <svg
         version="1.1"
@@ -51,9 +51,9 @@ const mock = [
     ),
   },
   {
-    title: 'Modern Designed',
+    title: 'Modern Design',
     subtitle:
-      'Designed with the latest design trends in mind. theFront feels modern, minimal, and beautiful.',
+      'Designed with the latest design trends in mind. Shorts feels modern, minimal, and beautiful.',
     icon: (
       <svg
         height={40}
@@ -74,7 +74,7 @@ const mock = [
   },
   {
     title: 'Always free',
-    subtitle: `Shorts is and will always be free. you can shorten up to 30 links a day as guest, or up to 200 a day as free registered user.`,
+    subtitle: `Shorts is and will always be free. you can shorten up to 30 links a day as guest, or up to 100 a day as a registered user.`,
     icon: (
       <svg
         version="1.1"

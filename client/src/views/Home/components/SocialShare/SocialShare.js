@@ -39,7 +39,7 @@ const SocialShare = ({ data }) => {
       <RedditShareButton url={data.shortUrl}>
         <RedditIcon size={36} round={true} />
       </RedditShareButton>{' '}
-      <Box component={'span'} onClick={handleChange}>
+      <Box component={'span'} onClick={handleChange} sx={{ cursor: 'pointer' }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 12.58 12.58"

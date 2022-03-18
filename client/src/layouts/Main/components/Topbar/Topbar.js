@@ -10,22 +10,18 @@ import DarkLogo from '../../../../assets/DarkLogo.png';
 import ThemeModeToggler from 'components/ThemeModeToggler';
 import { Avatar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { userLogOut } from 'store/actions/userActions';
 
 const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const { mode } = theme.palette;
   const userDetails = useSelector((state) => state.userDetails);
-  const {   user } = userDetails;
+  const { user } = userDetails;
   const logout = () => {
-    axios
-      .get('http://localhost:4000/auth/logout', { withCredentials: true })
-      .then((res) => {
-        if (res.data) window.location.href = '/';
-      });
+    dispatch(userLogOut());
   };
-
   return (
     <Box
       display={'flex'}
@@ -95,14 +91,11 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
             </Box>
           )}
         </Box>
-        <Box marginLeft={2}>
+        <Box marginLeft={5}>
           <ThemeModeToggler />
         </Box>
       </Box>
       <Box sx={{ display: { xs: 'flex', md: 'none' } }} alignItems={'center'}>
-        <Box marginRight={2}>
-          <Avatar src={user.avatar} />
-        </Box>
         <Button
           onClick={() => onSidebarOpen()}
           aria-label="Menu"

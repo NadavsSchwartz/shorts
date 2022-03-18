@@ -73,3 +73,40 @@ export const getUserStats = () => async (dispatch) => {
     });
   }
 };
+
+export const USER_LOG_OUT_REQUEST = 'USER_LOG_OUT_REQUEST';
+export const USER_LOG_OUT_SUCCESS = 'USER_LOG_OUT_SUCCESS';
+export const USER_LOG_OUT_FAIL = 'USER_LOG_OUT_FAIL';
+
+export const userLogOut = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_LOG_OUT_REQUEST,
+    });
+
+    const config = {
+      withCredentials: true,
+    };
+
+    const { data } = await axios.get(
+      `http://localhost:4000/auth/logout`,
+      config,
+    );
+
+    dispatch({
+      type: USER_LOG_OUT_SUCCESS,
+      payload: data,
+    });
+    window.location.href = '/';
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+
+    dispatch({
+      type: USER_LOG_OUT_FAIL,
+      payload: message,
+    });
+  }
+};

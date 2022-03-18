@@ -12,7 +12,17 @@ export const TrafficByDevice = ({ AllLocations }) => {
     datasets: [
       {
         data: [],
-        backgroundColor: ['#3F51B5', '#e53935', '#FB8C00'],
+        backgroundColor: [
+          '#3F51B5',
+          '#e53935',
+          '#FB8C00',
+          '#460943',
+          '#c5b313',
+          '#3b3332',
+          '#1366c5',
+          '#5113c5',
+          '#c513c5',
+        ],
         borderWidth: 3,
         borderColor: '#FFFFFF',
         hoverBorderColor: '#FFFFFF',

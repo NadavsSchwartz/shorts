@@ -1,17 +1,14 @@
-/* eslint-disable no-unused-vars */
-import { Card, CircularProgress, Container, Grid } from '@mui/material';
+import { Alert, CircularProgress, Container, Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import { Main } from 'layouts';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Form from './components/Form';
 import { LinksCard, ClicksCard, LatestLinkCard } from './components/Cards';
 import { LinkTable } from './components/LinksTable';
 import { useDispatch, useSelector } from 'react-redux';
-import Skeleton from '@mui/material/Skeleton';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { getUserStats } from '../../store/actions/userActions';
-import TrafficByState from './components/TrafficByState';
+// import { getUserStats } from '../../store/actions/userActions';
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,17 +16,25 @@ const Home = () => {
   const userDetails = useSelector((state) => state.userDetails);
   const { loading: userLoadingData, user } = userDetails;
   const userStats = useSelector((state) => state.userStats);
-  const { loading, stats } = userStats;
+  const { loading, stats, error } = userStats;
+  const [showAlert, SetShowAlert] = useState(false);
   useEffect(() => {
-    dispatch(getUserStats());
     if (!userLoadingData && !user.email) navigate('/signin');
-  }, []);
+    if (!loading && error !== null) {
+      SetShowAlert(true);
+      setTimeout(() => {
+        SetShowAlert(false);
+        dispatch({ type: 'RESET_ERROR_MESSAGE' });
+      }, 5000);
+    }
+  }, [error]);
   const Analytics = stats && stats.Analytics ? stats.Analytics : [];
 
   const LatestLink = Analytics && Analytics.slice(-1);
   return (
     <Main>
       <Box sx={{ minHeight: '100vh' }}>
+        {showAlert && <Alert severity="error">{error}</Alert>}
         {loading ? (
           <CircularProgress
             style={{
@@ -46,7 +51,7 @@ const Home = () => {
             <Box
               component="main"
               sx={{
-                py: 12,
+                py: 6,
               }}
             >
               <Container maxWidth={false}>
