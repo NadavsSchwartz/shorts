@@ -256,7 +256,7 @@ export default function EnhancedTable({ AllShortLinks }) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - AllShortLinks.length) : 0;
 
-  const handleClose = (event, reason) => {
+  const handleCloseCopyMessage = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -268,9 +268,13 @@ export default function EnhancedTable({ AllShortLinks }) {
       <Snackbar
         open={successCopyUrlMessage}
         autoHideDuration={6000}
-        onClose={handleClose}
+        onClose={handleCloseCopyMessage}
       >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseCopyMessage}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
           Successfully copied the short url!
         </Alert>
       </Snackbar>
@@ -340,7 +344,14 @@ export default function EnhancedTable({ AllShortLinks }) {
                                 width={100}
                               />
                             </Grid>
-                            <Grid container sx={{ width: '100%' }}>
+                            <Grid
+                              container
+                              sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                              }}
+                            >
                               <Typography variant="caption">
                                 {' '}
                                 Analytics appear after links are visited

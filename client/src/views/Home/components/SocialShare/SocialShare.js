@@ -16,31 +16,60 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import { Box, Grid, Typography } from '@mui/material';
-const SocialShare = ({ data }) => {
+import { Alert, Box, Grid, Snackbar, Typography } from '@mui/material';
+const SocialShare = ({ Link }) => {
+  const [successCopyUrlMessage, SetSuccessCopyUrlMessage] = useState(false);
   const [openDialog, SetOpenDialog] = useState(false);
   const handleChange = () => {
     SetOpenDialog(!openDialog);
   };
 
+  const handleCloseCopyMessage = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    SetSuccessCopyUrlMessage(false);
+  };
   return (
     <>
-      <TwitterShareButton url={data.shortUrl}>
+      <Snackbar
+        open={successCopyUrlMessage}
+        autoHideDuration={6000}
+        onClose={handleCloseCopyMessage}
+      >
+        <Alert
+          onClose={handleCloseCopyMessage}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          Successfully copied the short url!
+        </Alert>
+      </Snackbar>
+      <TwitterShareButton url={Link.shortUrl}>
         <TwitterIcon size={36} round={true} />
       </TwitterShareButton>{' '}
-      <FacebookShareButton url={data.shortUrl}>
+      <FacebookShareButton url={Link.shortUrl}>
         <FacebookIcon size={36} round={true} />
       </FacebookShareButton>{' '}
-      <WhatsappShareButton title={data.shortUrl}>
+      <WhatsappShareButton title={Link.shortUrl}>
         <WhatsappIcon size={36} round={true} />
       </WhatsappShareButton>{' '}
-      <TelegramShareButton url={data.shortUrl}>
+      <TelegramShareButton url={Link.shortUrl}>
         <TelegramIcon size={36} round={true} />
       </TelegramShareButton>{' '}
-      <RedditShareButton url={data.shortUrl}>
+      <RedditShareButton url={Link.shortUrl}>
         <RedditIcon size={36} round={true} />
       </RedditShareButton>{' '}
-      <ContentCopyIcon color={'primary'} fontSize={'large'} />{' '}
+      <ContentCopyIcon
+        color={'primary'}
+        fontSize={'large'}
+        onClick={() =>
+          navigator.clipboard
+            .writeText(Link.shortUrl)
+            .then(() => SetSuccessCopyUrlMessage(!successCopyUrlMessage))
+        }
+      />{' '}
       <Box component={'span'} onClick={handleChange} sx={{ cursor: 'pointer' }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -60,10 +89,10 @@ const SocialShare = ({ data }) => {
           alignItems="center"
         >
           <Typography variant="caption" sx={{ mb: 1 }}>
-            {data.shortUrl}
+            {Link.shortUrl}
           </Typography>
           <Grid container justifyContent="center" sx={{ mb: 4 }}>
-            <QRCode value={data.shortUrl} level={'H'} />
+            <QRCode value={Link.shortUrl} level={'H'} />
           </Grid>
         </Grid>
       </Dialog>

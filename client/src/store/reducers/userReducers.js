@@ -30,6 +30,12 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
       return { ...state, loading: false, error: action.payload };
     case USER_DETAILS_RESET:
       return { user: {} };
+    case USER_LOG_OUT_REQUEST:
+      return { ...state, loading: true };
+    case USER_LOG_OUT_SUCCESS:
+      return { ...state, loading: false, user: {} };
+    case USER_LOG_OUT_FAIL:
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
@@ -45,12 +51,6 @@ export const userStatsReducer = (
     case USER_STATS_SUCCESS:
       return { ...state, loading: false, stats: action.payload };
     case USER_STATS_FAIL:
-      return { ...state, loading: false, error: action.payload };
-    case USER_LOG_OUT_REQUEST:
-      return { ...state, loading: true };
-    case USER_LOG_OUT_SUCCESS:
-      return { ...state, loading: false, stats: {} };
-    case USER_LOG_OUT_FAIL:
       return { ...state, loading: false, error: action.payload };
     case CREATE_LINK_REQUEST:
       return { ...state, loading: true };

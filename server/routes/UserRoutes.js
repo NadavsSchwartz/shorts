@@ -23,13 +23,13 @@ router.get(
 	}
 );
 
-router.get('/auth/logout', (req, res) => {
+router.get('/auth/logout', async (req, res) => {
 	if (req.user) {
-		req.session.destroy();
-		res.clearCookie('connect.sid');
-		return res.json({ message: 'logout success' });
+		await req.session.destroy();
+		await res.clearCookie('connect.sid');
+		return res.status(200).json({ message: 'logout success' });
 	} else {
-		return res.json({ message: 'no user to log out!' });
+		return res.status(200).json({ message: 'no user to log out!' });
 	}
 });
 router.get('/me', (req, res, next) => {
