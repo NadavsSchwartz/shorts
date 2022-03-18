@@ -6,7 +6,18 @@ import Container from 'components/Container';
 import { GetStarted, Features, Services, Hero, QuickStart } from './components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Alert } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Grid,
+  Typography,
+} from '@mui/material';
+import { SocialShare } from 'views/Home/components/SocialShare';
+import { format } from 'timeago.js';
+
 const Landing = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -14,7 +25,7 @@ const Landing = () => {
   const userDetails = useSelector((state) => state.userDetails);
   const { loading: userLoading, user } = userDetails;
   const userStats = useSelector((state) => state.userStats);
-  const { loading, error } = userStats;
+  const { loading, error, stats } = userStats;
   const navigate = useNavigate();
   useEffect(() => {
     if (!userLoading && user && user.email) navigate('/home');
@@ -30,9 +41,103 @@ const Landing = () => {
     <Box sx={{ overflowX: 'hidden' }}>
       <Main>
         {showAlert && <Alert severity="error">{error}</Alert>}
-        <div id="short">
-          <Hero />
-        </div>
+        {loading && (
+          <CircularProgress
+            sx={{
+              margin: 'auto',
+              left: '0',
+              right: '0',
+              top: '0',
+              bottom: '0',
+              position: 'fixed',
+            }}
+          />
+        )}
+
+        <Hero />
+        {stats && Object.keys(stats).length !== 0 ? (
+          <Grid
+            container
+            spacing={3}
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+              position: 'relative',
+              mt: -12,
+              zIndex: 1,
+            }}
+          >
+            <Card
+              sx={{
+                height: 'auto',
+                width: '80%',
+                maxWidth: '700px',
+              }}
+            >
+              <CardContent>
+                <Grid container sx={{ justifyContent: 'space-between' }}>
+                  <Grid item>
+                    <Typography color="textPrimary" variant="body4">
+                      {stats && stats.longUrl}
+                    </Typography>
+                    <Grid
+                      item
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        width: '250px',
+                      }}
+                    >
+                      <a
+                        href={stats && stats.shortUrl}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Typography noWrap color="textPrimary" variant="body4">
+                          <Box component="span" fontWeight="fontWeightMedium">
+                            {stats && stats.shortUrl}
+                          </Box>{' '}
+                        </Typography>
+                      </a>{' '}
+                    </Grid>
+                  </Grid>
+
+                  <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
+                    Created: {format(stats.createdAt)}
+                  </Grid>
+                </Grid>
+
+                <Grid container sx={{ justifyContent: 'center' }}>
+                  <Grid item>
+                    <Grid item sx={{ pt: 3 }}>
+                      <SocialShare data={stats && stats} />
+                    </Grid>
+
+                    <Grid item>
+                      <Typography color="textPrimary" variant="h6">
+                        Get the most from your link
+                      </Typography>
+                    </Grid>
+                    <Grid item textAlign="center">
+                      <Button
+                        component={'a'}
+                        href={'/signup'}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        fullWidth={false}
+                      >
+                        Sign up free
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        ) : (
+          ''
+        )}
+
         <Container>
           <Services />
         </Container>

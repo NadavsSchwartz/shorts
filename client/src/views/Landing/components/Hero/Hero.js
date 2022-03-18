@@ -12,7 +12,7 @@ const Hero = () => {
 
   return (
     <Box
-      minHeight={300}
+      minHeight={400}
       height={'auto'}
       position={'relative'}
       sx={{

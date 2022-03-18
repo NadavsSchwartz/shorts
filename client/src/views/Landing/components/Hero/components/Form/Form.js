@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import Divider from '@mui/material/Divider';
 // import Typography from '@mui/material/Typography';
 // import { useTheme } from '@mui/material/styles';
-import { Alert, IconButton, InputBase, Paper } from '@mui/material';
+import { Alert, Button, InputBase, Paper } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useDispatch } from 'react-redux';
 import { createShortLink } from 'store/actions/shortLinkAcionts';
@@ -31,9 +31,8 @@ const Form = () => {
 
       if (result !== null) {
         dispatch(createShortLink(url));
-      } else {
-        throw Error;
       }
+      SetUrl('');
     } catch (error) {
       SetError(`It looks like an invalid url. Please double check your input
             and try again.`);
@@ -50,20 +49,22 @@ const Form = () => {
     >
       {error && <Alert severity="error">{error}</Alert>}
       <InputBase
+        autoComplete="on"
         sx={{ ml: 1, flex: 1 }}
         placeholder="Long link to shorten..."
+        name="url"
+        value={url}
         required
-        type="url"
+        type="text"
         color="primary"
         size="large"
-        fullWidth
         autoFocus={true}
         onChange={handleUrlChange}
       />
       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-      <IconButton color="primary" sx={{ p: '10px' }} type="submit">
+      <Button color="primary" sx={{ p: '10px' }} type="submit">
         <SendIcon fontSize="large" />
-      </IconButton>
+      </Button>
     </Paper>
   );
 };
