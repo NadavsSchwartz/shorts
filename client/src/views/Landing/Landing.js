@@ -1,69 +1,80 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Main from 'layouts/Main';
 import Container from 'components/Container';
 import { GetStarted, Features, Services, Hero, QuickStart } from './components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Alert } from '@mui/material';
 const Landing = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const [showAlert, SetShowAlert] = useState(false);
   const userDetails = useSelector((state) => state.userDetails);
-  const { loading, user } = userDetails;
+  const { loading: userLoading, user } = userDetails;
+  const userStats = useSelector((state) => state.userStats);
+  const { loading, error } = userStats;
   const navigate = useNavigate();
   useEffect(() => {
-    if (!loading && user && user.email) navigate('/home');
-  }, []);
+    if (!userLoading && user && user.email) navigate('/home');
+    if (!loading && error !== null) {
+      SetShowAlert(true);
+      setTimeout(() => {
+        SetShowAlert(false);
+        dispatch({ type: 'RESET_ERROR_MESSAGE' });
+      }, 5000);
+    }
+  }, [error]);
   return (
-    <Suspense fallback={<div>Loading</div>}>
-      <Box sx={{ overflowX: 'hidden' }}>
-        <Main>
-          <div id="short">
-            <Hero />
-          </div>
+    <Box sx={{ overflowX: 'hidden' }}>
+      <Main>
+        {showAlert && <Alert severity="error">{error}</Alert>}
+        <div id="short">
+          <Hero />
+        </div>
+        <Container>
+          <Services />
+        </Container>
+        <Box
+          sx={{
+            backgroundImage: `linear-gradient(to bottom, ${alpha(
+              theme.palette.background.paper,
+              0,
+            )}, ${alpha(theme.palette.alternate.main, 1)} 100%)`,
+            backgroundRepeat: 'repeat-x',
+            position: 'relative',
+          }}
+        >
           <Container>
-            <Services />
+            <Features />
+          </Container>
+          <Container>
+            <QuickStart />
           </Container>
           <Box
+            component={'svg'}
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            viewBox="0 0 1920 100.1"
             sx={{
-              backgroundImage: `linear-gradient(to bottom, ${alpha(
-                theme.palette.background.paper,
-                0,
-              )}, ${alpha(theme.palette.alternate.main, 1)} 100%)`,
-              backgroundRepeat: 'repeat-x',
-              position: 'relative',
+              width: '100%',
+              marginBottom: theme.spacing(-1),
             }}
           >
-            <Container>
-              <Features />
-            </Container>
-            <Container>
-              <QuickStart />
-            </Container>
-            <Box
-              component={'svg'}
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
-              viewBox="0 0 1920 100.1"
-              sx={{
-                width: '100%',
-                marginBottom: theme.spacing(-1),
-              }}
-            >
-              <path
-                fill={theme.palette.background.paper}
-                d="M0,0c0,0,934.4,93.4,1920,0v100.1H0L0,0z"
-              ></path>
-            </Box>
+            <path
+              fill={theme.palette.background.paper}
+              d="M0,0c0,0,934.4,93.4,1920,0v100.1H0L0,0z"
+            ></path>
           </Box>
-          <Container>
-            <GetStarted />
-          </Container>
-        </Main>
-      </Box>
-    </Suspense>
+        </Box>
+        <Container>
+          <GetStarted />
+        </Container>
+      </Main>
+    </Box>
   );
 };
 

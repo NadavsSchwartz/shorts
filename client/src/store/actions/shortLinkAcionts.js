@@ -59,6 +59,7 @@ export const createShortLink = (longUrlToShorten) => async (dispatch) => {
       error.response && error.response.data
         ? error.response.data
         : error.message;
+
     dispatch({
       type: CREATE_LINK_FAIL,
       payload: message,

@@ -35,7 +35,7 @@ const Form = () => {
         throw Error;
       }
     } catch (error) {
-      SetError(`We detected an invalid url. Please double check the long URL
+      SetError(`It looks like an invalid url. Please double check your input
             and try again.`);
       setTimeout(() => {
         SetError('');

@@ -10,7 +10,7 @@ const Routes = () => {
   const { loading, user } = userDetails;
   useEffect(() => {
     dispatch(getUserDetails());
-    if (user) dispatch(getUserStats());
+    if (user && user.email) dispatch(getUserStats());
   }, []);
 
   return (
