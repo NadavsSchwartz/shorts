@@ -13,6 +13,7 @@ import cookieParser from 'cookie-parser';
 import './strategies/GoogleStrategy.js';
 import './strategies/TwitterStrategy.js';
 import './strategies/GithubStrategy.js';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 
@@ -29,7 +30,6 @@ app.set('trust proxy', true);
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //Add the client URL to the CORS policy
-
 const whitelist = process.env.WHITELISTED_DOMAINS
 	? process.env.WHITELISTED_DOMAINS.split(',')
 	: [];
@@ -52,7 +52,7 @@ app.set('trust proxy', 1);
 
 app.use(
 	session({
-		secret: 'secretcode',
+		secret: process.env.SESSION_SECRET,
 		resave: true,
 		saveUninitialized: true,
 	})
@@ -73,9 +73,22 @@ passport.deserializeUser((id, done) => {
 	});
 });
 
+const apiLimiter = rateLimit({
+	windowMs: 1440 * 60 * 1000, // 24 hours
+	// Limit each IP to 100 requests daily for user, and 30 for non-user
+	max: (req, res) => {
+		if (req.user) return 100;
+		else return 30;
+	},
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+	message: 'You have reached your daily quota.',
+});
+
+// Apply the rate limiting middleware to API calls only
+app.use('/url', apiLimiter);
 app.use('/', UserRoutes);
 app.use('/', ShortenedLinkRoutes);
-
 app.get('/', (req, res) => {
 	return res.send({ status: 'success' });
 });

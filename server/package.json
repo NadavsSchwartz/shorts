@@ -21,6 +21,7 @@
         "cors": "^2.8.5",
         "dotenv": "^14.3.2",
         "express": "^4.17.3",
+        "express-rate-limit": "^6.3.0",
         "express-session": "^1.17.2",
         "google-auth-library": "^7.14.0",
         "ipinfo-express": "^1.0.0",

@@ -10,7 +10,6 @@ const { checkWebURL } = uri;
 // @desc    delete Shortened Link Analytics
 // @route   DELETE /url
 export const deleteShortLink = async (req, res) => {
-	console.log(req.user);
 	const { shortUrl } = req.body;
 	if (!shortUrl) return res.status(404).json({ message: 'no link found' });
 	const isShortLink = await ShortLink.findOne({
@@ -25,7 +24,7 @@ export const deleteShortLink = async (req, res) => {
 			options: { sort: { created_at: -1 } },
 		});
 		let AllClicks = 0;
-
+		let AllLocations = [];
 		const modifiedAnalytics = [];
 
 		await ShortLinksAnalytics.map((Link) => {
@@ -161,7 +160,7 @@ export const redirectToShortenedLink = async (req, res) => {
 			const { data } = await axios.get(
 				`https://ipinfo.io/json?token=${process.env.IPINFO_TOKEN}`
 			);
-			console.log(data);
+
 			const currentTime = new Date().toISOString().split('T', 1)[0];
 
 			await Analytics.findOneAndUpdate(
