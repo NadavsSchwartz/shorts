@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 
 import Container from 'components/Container';
 
-import { Headline, Form } from './components';
+import { Headline, ShortLinkForm } from './components';
 import HeroImage from '../../../../assets/indexViewHero.jpg';
 const Hero = () => {
   const theme = useTheme();
@@ -45,7 +45,7 @@ const Hero = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Box width={1} height="100%" display="flex" alignItems="center">
-              <Form />
+              <ShortLinkForm isLandingPage={true} />
             </Box>
           </Grid>
         </Grid>

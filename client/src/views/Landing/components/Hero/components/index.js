@@ -1,2 +1,2 @@
-export { default as Form } from './Form';
+export { default as ShortLinkForm } from '../../../../../components/ShortLinkForm';
 export { default as Headline } from './Headline';

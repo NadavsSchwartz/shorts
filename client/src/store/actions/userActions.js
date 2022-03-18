@@ -95,11 +95,11 @@ export const userLogOut = () => async (dispatch) => {
       config,
     );
 
+    window.location.href = '/';
     dispatch({
       type: USER_LOG_OUT_SUCCESS,
       payload: data,
     });
-    window.location.href = '/';
   } catch (error) {
     const message =
       error.response && error.response.data.message

@@ -58,26 +58,28 @@ const Landing = () => {
         {stats && Object.keys(stats).length !== 0 ? (
           <Grid
             container
-            spacing={3}
+            spacing={4}
             alignItems="center"
             justifyContent="center"
             sx={{
               position: 'relative',
               mt: -12,
+              ml: 0,
+              width: '100%',
               zIndex: 1,
             }}
           >
             <Card
               sx={{
                 height: 'auto',
-                width: '80%',
+                width: '85%',
                 maxWidth: '700px',
               }}
             >
               <CardContent>
                 <Grid container sx={{ justifyContent: 'space-between' }}>
                   <Grid item>
-                    <Typography color="textPrimary" variant="body4">
+                    <Typography nowrap color="textPrimary" variant="body4">
                       {stats && stats.longUrl}
                     </Typography>
                     <Grid
@@ -92,12 +94,16 @@ const Landing = () => {
                         href={stats && stats.shortUrl}
                         style={{ textDecoration: 'none' }}
                       >
-                        <Typography noWrap color="textPrimary" variant="body4">
-                          <Box component="span" fontWeight="fontWeightMedium">
-                            {stats && stats.shortUrl}
-                          </Box>{' '}
+                        <Typography color="textPrimary" variant="body4">
+                          <Box component="span" fontWeight="800">
+                            {stats &&
+                              stats.shortUrl.substring(
+                                7,
+                                stats.shortUrl.length,
+                              )}
+                          </Box>
                         </Typography>
-                      </a>{' '}
+                      </a>
                     </Grid>
                   </Grid>
 
@@ -113,12 +119,22 @@ const Landing = () => {
                     </Grid>
 
                     <Grid item>
-                      <Typography color="textPrimary" variant="h6">
-                        Get the most from your link
+                      <Typography
+                        color="textPrimary"
+                        variant="h6"
+                        fontWeight={700}
+                      >
+                        Get the most out of your links
+                      </Typography>
+                    </Grid>
+                    <Grid item sx={{ textAlign: 'center' }}>
+                      <Typography color="textPrimary" variant="subtitle2">
+                        Track all your links in one place
                       </Typography>
                     </Grid>
                     <Grid item textAlign="center">
                       <Button
+                        sx={{ mt: 2 }}
                         component={'a'}
                         href={'/signup'}
                         variant="contained"

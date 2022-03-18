@@ -2,7 +2,6 @@ import { Alert, CircularProgress, Container, Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import { Main } from 'layouts';
 import React, { useEffect, useState } from 'react';
-import Form from './components/Form';
 import { LinksCard, ClicksCard, LatestLinkCard } from './components/Cards';
 import { LinkTable } from './components/LinksTable';
 import { useDispatch, useSelector } from 'react-redux';
@@ -33,7 +32,13 @@ const Home = () => {
   const LatestLink = Analytics && Analytics.slice(-1);
   return (
     <Main>
-      <Box sx={{ minHeight: '100vh' }}>
+      <Box
+        sx={{
+          minHeight: '100vh',
+          maxWidth: '1300px',
+          margin: 'auto',
+        }}
+      >
         {showAlert && <Alert severity="error">{error}</Alert>}
         {loading ? (
           <CircularProgress
@@ -49,31 +54,29 @@ const Home = () => {
         ) : (
           <>
             <Box
-              component="main"
+              display={'flex'}
               sx={{
                 py: 6,
               }}
             >
-              <Container maxWidth={false}>
+              <Container maxWidth={true}>
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6} lg={2.5}>
+                  <Grid item xs={12} sm={4} md={3} lg={3.5}>
                     <LinksCard
                       TotalLinks={stats && stats.TotalLinks}
                       loading={loading && loading ? true : null}
                       theme={theme}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={2.5}>
+                  <Grid item xs={12} sm={4} md={3} lg={3.5}>
                     <ClicksCard
                       TotalClicks={stats && stats.TotalClicks}
                       loading={loading && loading ? true : null}
                       theme={theme}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={5} lg={2.5}>
-                    <Form />
-                  </Grid>
-                  <Grid item xs={12} sm={7} lg={4.5}>
+
+                  <Grid item xs={12} sm={4} md={6} lg={5}>
                     <LatestLinkCard
                       LatestLink={stats && LatestLink}
                       loading={loading && loading ? true : null}

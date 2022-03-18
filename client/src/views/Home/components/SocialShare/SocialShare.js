@@ -13,6 +13,7 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from 'react-share';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Box, Grid, Typography } from '@mui/material';
@@ -39,6 +40,7 @@ const SocialShare = ({ data }) => {
       <RedditShareButton url={data.shortUrl}>
         <RedditIcon size={36} round={true} />
       </RedditShareButton>{' '}
+      <ContentCopyIcon color={'primary'} fontSize={'large'} />{' '}
       <Box component={'span'} onClick={handleChange} sx={{ cursor: 'pointer' }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

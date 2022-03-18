@@ -3,13 +3,15 @@ import React, { useState } from 'react';
 // import TextField from '@mui/material/TextField';
 // import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import PropTypes from 'prop-types';
 // import Typography from '@mui/material/Typography';
 // import { useTheme } from '@mui/material/styles';
 import { Alert, Button, InputBase, Paper } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useDispatch } from 'react-redux';
 import { createShortLink } from 'store/actions/shortLinkAcionts';
-const Form = () => {
+import { Box } from '@mui/system';
+const ShortLinkForm = ({ isLandingPage }) => {
   // const theme = useTheme();
   // const [shortenedLink] = useState([]);
   const dispatch = useDispatch();
@@ -42,31 +44,41 @@ const Form = () => {
     }
   };
   return (
-    <Paper
-      component="form"
-      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 450 }}
-      onSubmit={handleSubmitForm}
-    >
-      {error && <Alert severity="error">{error}</Alert>}
-      <InputBase
-        autoComplete="on"
-        sx={{ ml: 1, flex: 1 }}
-        placeholder="Long link to shorten..."
-        name="url"
-        value={url}
-        required
-        type="text"
-        color="primary"
-        size="large"
-        autoFocus={true}
-        onChange={handleUrlChange}
-      />
-      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-      <Button color="primary" sx={{ p: '10px' }} type="submit">
-        <SendIcon fontSize="large" />
-      </Button>
-    </Paper>
+    <Box>
+      <Paper
+        component="form"
+        sx={{
+          p: '2px 2px 8px 8px',
+          display: 'flex',
+          alignItems: 'center',
+          width: isLandingPage
+            ? { xs: '350px', sm: '400px', md: '450px' }
+            : null,
+        }}
+        onSubmit={handleSubmitForm}
+      >
+        {error && <Alert severity="error">{error}</Alert>}
+        <InputBase
+          autoComplete="on"
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="Long link to shorten..."
+          name="url"
+          value={url}
+          required
+          type="text"
+          size="large"
+          autoFocus={true}
+          onChange={handleUrlChange}
+        />
+        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+        <Button color="primary" sx={{ p: '10px' }} type="submit">
+          <SendIcon fontSize="large" />
+        </Button>
+      </Paper>
+    </Box>
   );
 };
-
-export default Form;
+ShortLinkForm.propTypes = {
+  isLandingPage: PropTypes.bool,
+};
+export default ShortLinkForm;

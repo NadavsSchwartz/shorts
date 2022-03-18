@@ -17,7 +17,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 export const TotalClicks = ({ TotalClicks, ...props }) => {
   const Percentage = Math.floor(TotalClicks / 1) * 100;
   return (
-    <Card {...props}>
+    <Card {...props} sx={{ height: '100%' }}>
       <CardContent>
         <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
           <Grid item>

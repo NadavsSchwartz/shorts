@@ -4,14 +4,14 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { alpha, useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
-// import { NavItem } from './components';
 import LightLogo from '../../../../assets/LightLogo.png';
 import DarkLogo from '../../../../assets/DarkLogo.png';
 import ThemeModeToggler from 'components/ThemeModeToggler';
-import { Avatar, Typography } from '@mui/material';
+import { Avatar, Typography, useMediaQuery } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogOut } from 'store/actions/userActions';
+import { ShortLinkForm } from 'views/Landing/components/Hero/components';
 
 const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
   const theme = useTheme();
@@ -19,6 +19,10 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
   const { mode } = theme.palette;
   const userDetails = useSelector((state) => state.userDetails);
   const { user } = userDetails;
+
+  const isMd = useMediaQuery(theme.breakpoints.up('md'), {
+    defaultMatches: true,
+  });
   const logout = () => {
     dispatch(userLogOut());
   };
@@ -29,20 +33,44 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
       alignItems={'center'}
       width={1}
     >
-      <Box
-        display={'flex'}
-        component="a"
-        href={user && !user.email ? '/' : '/home'}
-        title="Shorts"
-        width={{ xs: 100, md: 120 }}
-      >
+      {user && !user.email ? (
         <Box
-          component={'img'}
-          src={mode === 'light' && !colorInvert ? LightLogo : DarkLogo}
-          height={1}
-          width={1}
-        />
-      </Box>
+          display={'flex'}
+          component="a"
+          href={user && !user.email ? '/' : '/home'}
+          title="Shorts"
+          width={{ xs: 100, md: 120 }}
+        >
+          <Box
+            component={'img'}
+            src={mode === 'light' && !colorInvert ? LightLogo : DarkLogo}
+            height={1}
+            width={1}
+          />
+        </Box>
+      ) : (
+        <>
+          <Box
+            sx={{ display: { xs: 'none', md: 'flex' } }}
+            display={'flex'}
+            component="a"
+            href={user && !user.email ? '/' : '/home'}
+            title="Shorts"
+            width={{ xs: 100, md: 120 }}
+          >
+            <Box
+              component={'img'}
+              src={mode === 'light' && !colorInvert ? LightLogo : DarkLogo}
+              height={1}
+              width={1}
+            />
+          </Box>
+
+          <Box width={isMd ? 0.5 : 0.7}>
+            <ShortLinkForm />
+          </Box>
+        </>
+      )}
       <Box sx={{ display: { xs: 'none', md: 'flex' } }} alignItems={'center'}>
         <Box>
           <Button component={'a'} href="/faq">

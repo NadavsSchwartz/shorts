@@ -19,7 +19,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
     LatestLink && LatestLink[0] ? LatestLink[0].createdAt : '',
   );
   return (
-    <Card sx={{ height: '97%' }}>
+    <Card sx={{ height: '100%' }}>
       {loading ? (
         <>
           <Skeleton
@@ -52,7 +52,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    width: '250px',
+                    maxWidth: '250px',
                   }}
                 >
                   <a
@@ -72,7 +72,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
                 </Grid>
               </Grid>
 
-              <Grid item sx={{ display: { sm: 'none', md: 'block' } }}>
+              <Grid item sx={{ display: { xs: 'none', md: 'block' } }}>
                 Created: {timeAgo}
               </Grid>
             </Grid>
@@ -88,7 +88,7 @@ export const LatestLinkCard = ({ LatestLink, loading, theme }) => {
                     data={LatestLink && LatestLink[0] ? LatestLink[0] : ''}
                   />
                 </Grid>
-                <Grid item sx={{ display: { sm: 'none', md: 'block' } }}>
+                <Grid item sx={{ display: { xs: 'none', md: 'block' } }}>
                   <Grid item sx={{ pl: 4 }}>
                     <Typography color="textPrimary" variant="h4">
                       {LatestLink && LatestLink[0]
