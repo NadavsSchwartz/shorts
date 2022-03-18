@@ -17,7 +17,7 @@ ReactDOM.render(
       <Suspense
         fallback={
           <CircularProgress
-            style={{
+            sx={{
               margin: 'auto',
               left: '0',
               right: '0',

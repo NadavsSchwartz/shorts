@@ -8,9 +8,9 @@ const Routes = () => {
   const dispatch = useDispatch();
   const userDetails = useSelector((state) => state.userDetails);
   const { loading, user } = userDetails;
+
   useEffect(() => {
     dispatch(getUserDetails());
-    if (user && user.email) dispatch(getUserStats());
   }, []);
 
   return (

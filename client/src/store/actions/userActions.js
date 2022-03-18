@@ -21,6 +21,8 @@ export const getUserDetails = () => async (dispatch) => {
       type: USER_DETAILS_SUCCESS,
       payload: data,
     });
+
+    dispatch(getUserStats());
   } catch (error) {
     const message =
       error.response && error.response.data.message
