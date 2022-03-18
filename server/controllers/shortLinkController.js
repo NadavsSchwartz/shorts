@@ -88,7 +88,7 @@ export const createNewShortenedLink = async (req, res) => {
 				shortUrl,
 				siteIcon,
 				urlId: newUrlId,
-				user: req.user._id,
+				user: req.user ? req.user._id : null,
 				analytics: newAnalytics._id,
 			};
 
@@ -97,47 +97,53 @@ export const createNewShortenedLink = async (req, res) => {
 			await NewShortLink.save();
 			await newAnalytics.updateOne({ shortLink: NewShortLink._id });
 			await newAnalytics.save();
+			if (req.user) {
+				const ShortLinksAnalytics = await ShortLink.find({
+					user: req.user._id,
+				}).populate({
+					path: 'analytics',
+					options: { sort: { created_at: -1 } },
+				});
 
-			const ShortLinksAnalytics = await ShortLink.find({
-				user: req.user._id,
-			}).populate({
+				let AllClicks = 0;
+
+				let AllLocations = [];
+
+				const modifiedAnalytics = [];
+
+				await ShortLinksAnalytics.map((Link) => {
+					// calculate total clicks of all links for easy management in front end
+					AllClicks = Link.analytics.totalClicks + AllClicks;
+
+					// calculate all locations of each non empty clicks location for easy management in front end
+					if (Link.analytics.location.length !== 0)
+						AllLocations.push(Link.analytics.location);
+
+					// modify the array of object of ShortLinks and Analytics for easier management in front end
+					modifiedAnalytics.push({
+						id: Link._id,
+						shortUrl: Link.shortUrl,
+						siteIcon: Link.siteIcon,
+						longUrl: Link.longUrl,
+						createdAt: Link.createdAt,
+						totalClicks: Link.analytics.totalClicks,
+						clicks: Link.analytics.clicks,
+						location: Link.analytics.location,
+					});
+				});
+
+				return res.status(200).json({
+					Analytics: modifiedAnalytics,
+					TotalClicks: AllClicks || 0,
+					TotalLinks: modifiedAnalytics.length,
+					AllLocations: AllLocations,
+				});
+			}
+			await NewShortLink.populate({
 				path: 'analytics',
 				options: { sort: { created_at: -1 } },
 			});
-
-			let AllClicks = 0;
-
-			let AllLocations = [];
-
-			const modifiedAnalytics = [];
-
-			await ShortLinksAnalytics.map((Link) => {
-				// calculate total clicks of all links for easy management in front end
-				AllClicks = Link.analytics.totalClicks + AllClicks;
-
-				// calculate all locations of each non empty clicks location for easy management in front end
-				if (Link.analytics.location.length !== 0)
-					AllLocations.push(Link.analytics.location);
-
-				// modify the array of object of ShortLinks and Analytics for easier management in front end
-				modifiedAnalytics.push({
-					id: Link._id,
-					shortUrl: Link.shortUrl,
-					siteIcon: Link.siteIcon,
-					longUrl: Link.longUrl,
-					createdAt: Link.createdAt,
-					totalClicks: Link.analytics.totalClicks,
-					clicks: Link.analytics.clicks,
-					location: Link.analytics.location,
-				});
-			});
-
-			return res.status(200).json({
-				Analytics: modifiedAnalytics,
-				TotalClicks: AllClicks || 0,
-				TotalLinks: modifiedAnalytics.length,
-				AllLocations: AllLocations,
-			});
+			return res.status(200).json(NewShortLink);
 		}
 	} catch (error) {
 		console.error(error);
@@ -178,6 +184,30 @@ export const redirectToShortenedLink = async (req, res) => {
 			);
 
 			return res.redirect(foundShortenedLink.longUrl);
+		}
+	} catch (error) {
+		console.error(error);
+		return res.status(404).json(error);
+	}
+};
+
+// @desc    Get Shortened Link Analytics
+// @route   GET /url/:id
+export const getShortenedLinkAanlytics = async (req, res) => {
+	const urlId = req.params.id;
+	let foundShortenedLink;
+
+	try {
+		if (urlId)
+			foundShortenedLink = await ShortLink.findOne({
+				urlId: urlId,
+			});
+		if (foundShortenedLink) {
+			await foundShortenedLink.populate({
+				path: 'analytics',
+				options: { sort: { created_at: -1 } },
+			});
+			return res.status(200).json(foundShortenedLink);
 		}
 	} catch (error) {
 		console.error(error);

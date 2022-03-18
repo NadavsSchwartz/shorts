@@ -21,7 +21,7 @@ const QuickStart = () => {
               fontWeight: 700,
             }}
           >
-            Build tools and full documention
+            Don't feel like using the website? No Problem!
           </Typography>
           <Typography
             variant="h6"
@@ -30,8 +30,9 @@ const QuickStart = () => {
             sx={{ fontWeight: 400 }}
             align={'center'}
           >
-            Components, plugins, and build tools are all thoroughly documented
-            with live examples and markup for easier use and customization.
+            you can make a request with the long url you desire to shorten
+            directly to our api, making it easy to implement it within your app,
+            you can even shorten urls from the command line!
           </Typography>
         </Box>
       </Box>
@@ -45,18 +46,14 @@ const QuickStart = () => {
         bgcolor={'#21325b !important'}
       >
         {`
-> $ yarn install
-// Or
-> $ npm install
+> $ curl -XPOST -H "Content-type: application/json" -d '{"longUrl":"https://www.google.com"}' 'http://localhost:4000/url'
 
-// Everything installed!
+// {"urlId":"yDDqG2s","longUrl":"https://www.google.com","shortUrl":"http://localhost:4000/Qri0_bg","siteIcon":"https://www.google.com/favicon.ico"}
 
 
-> $ yarn start
-// Or
-> $ npm run start
+> $ curl -XGET -H "Content-type: application/json" 'http://localhost:4000/url/yDDqG2s'
 
-// LiveReload started. Opening localhost:3000
+// {"_id":"6233e5a5b3a12ac378c90c93","totalClicks":0,"location":[],"clicks":[],"createdAt":"2022-03-18T01:51:33.932Z","updatedAt":"2022-03-18T01:51:34.075Z"}
         `}
       </Box>
     </Box>
