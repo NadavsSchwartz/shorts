@@ -32,19 +32,18 @@ export const TrafficByDevice = ({ AllLocations }) => {
   };
   let unique = {};
 
-  const a = AllLocations && AllLocations;
-  if (a) {
-    a.forEach((linkData, index) => {
-      if (!unique[a[index].region]) {
-        unique[a[index].region] = 1;
+  if (AllLocations && AllLocations) {
+    AllLocations.forEach((linkData, index) => {
+      if (!unique[AllLocations[index].region]) {
+        unique[AllLocations[index].region] = 1;
       } else {
-        unique[a[index].region]++;
+        unique[AllLocations[index].region]++;
       }
     });
   }
 
-  unique &&
-    Object.entries(unique).forEach(([key, value]) => {
+  Object.keys(unique).length !== 0 &&
+    Object.entries(unique && unique).forEach(([key, value]) => {
       data.datasets[0].data.push(value), data.labels.push(key);
     });
 

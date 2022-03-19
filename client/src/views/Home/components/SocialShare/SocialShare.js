@@ -35,7 +35,7 @@ const SocialShare = ({ Link }) => {
     <>
       <Snackbar
         open={successCopyUrlMessage}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={handleCloseCopyMessage}
       >
         <Alert
@@ -61,7 +61,7 @@ const SocialShare = ({ Link }) => {
       <RedditShareButton url={Link.shortUrl}>
         <RedditIcon size={36} round={true} />
       </RedditShareButton>{' '}
-      <Box component={'span'} onClick={handleChange} sx={{ cursor: 'pointer' }}>
+      <Box component={'span'} sx={{ cursor: 'pointer' }}>
         <ContentCopyIcon
           color={'primary'}
           fontSize={'large'}
