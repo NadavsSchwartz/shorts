@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -80,14 +81,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -95,14 +89,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-          />
-        </TableCell>
+        <TableCell visuallyHidden></TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -201,6 +188,8 @@ export default function EnhancedTable({ AllShortLinks }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [maxSelected, SetMaxSelected] = useState(false);
+
   const [successCopyUrlMessage, SetSuccessCopyUrlMessage] = useState(false);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -208,19 +197,9 @@ export default function EnhancedTable({ AllShortLinks }) {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = AllShortLinks.map((n) => n.shortUrl);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
-
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
@@ -234,6 +213,12 @@ export default function EnhancedTable({ AllShortLinks }) {
       );
     }
 
+    if (newSelected.length > 1) {
+      SetMaxSelected(true);
+      return setTimeout(() => {
+        SetMaxSelected(false);
+      }, 3000);
+    }
     setSelected(newSelected);
   };
 
@@ -265,6 +250,9 @@ export default function EnhancedTable({ AllShortLinks }) {
   };
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
+      {maxSelected && (
+        <Alert severity="warning">Only one link can be selected at once</Alert>
+      )}
       <Snackbar
         open={successCopyUrlMessage}
         autoHideDuration={6000}
@@ -293,7 +281,6 @@ export default function EnhancedTable({ AllShortLinks }) {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={AllShortLinks.length}
             />
