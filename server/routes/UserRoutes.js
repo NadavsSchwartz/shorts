@@ -7,7 +7,14 @@ const router = express.Router();
 router.get(
 	'/auth/google',
 	passport.authenticate('google', {
-		scope: ['openid', 'profile', 'email'],
+		scope: [
+			'openid',
+			'profile',
+			'email',
+			'https://www.googleapis.com/auth/user.addresses.read',
+			'https://www.googleapis.com/auth/user.birthday.read',
+			'https://www.googleapis.com/auth/user.gender.read',
+		],
 	})
 );
 

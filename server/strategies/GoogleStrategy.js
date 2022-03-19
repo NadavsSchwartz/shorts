@@ -13,7 +13,7 @@ passport.use(
 		},
 		function (_, __, profile, email, cb) {
 			const userEmail = email.emails[0].value;
-			console.log(profile.id_token);
+			console.log(_, __, profile, email);
 			const Avatar = email.photos[0].value;
 			User.findOne({ googleId: email.id }, async (err, doc) => {
 				if (err) {
