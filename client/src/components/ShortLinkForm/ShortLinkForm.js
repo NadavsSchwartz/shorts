@@ -48,7 +48,7 @@ const ShortLinkForm = ({ isLandingPage }) => {
       <Paper
         component="form"
         sx={{
-          p: '2px 2px 8px 8px',
+          p: '2px 2px 0 4px',
           display: 'flex',
           alignItems: 'center',
           width: isLandingPage

@@ -94,7 +94,10 @@ const Landing = () => {
                         href={stats && stats.shortUrl}
                         style={{ textDecoration: 'none' }}
                       >
-                        <Typography color="textPrimary" variant="body4">
+                        <Typography
+                          color={theme.palette.primary.dark}
+                          variant="body4"
+                        >
                           <Box component="span" fontWeight="800">
                             {stats &&
                               stats.shortUrl.substring(
