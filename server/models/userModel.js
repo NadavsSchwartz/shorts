@@ -19,7 +19,7 @@ const userSchema = mongoose.Schema(
 			required: true,
 			unique: true,
 		},
-		password: {
+		authority: {
 			type: String,
 		},
 
@@ -42,13 +42,6 @@ const userSchema = mongoose.Schema(
 	},
 	{ timestamps: true, toJSON: { virtuals: true } }
 );
-
-userSchema.set('toJSON', {
-	transform: function (doc, ret, options) {
-		delete ret.refreshToken;
-		return ret;
-	},
-});
 
 userSchema.virtual('ShortLinks', {
 	ref: 'ShortLink',
