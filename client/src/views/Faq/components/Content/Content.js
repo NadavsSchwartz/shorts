@@ -40,7 +40,9 @@ const FaqGroupItem = ({ title, items }) => {
               <Typography fontWeight={600}>{item.title}</Typography>
             </Box>
             <AccordionDetails>
-              <Typography color="text.secondary">{item.subtitle}</Typography>
+              <Typography component={'div'} color="text.secondary">
+                {item.subtitle}
+              </Typography>
             </AccordionDetails>
           </Box>
         ))}
@@ -85,7 +87,7 @@ const Content = () => {
                   </p>{' '}
                   You need a URL shortener if you’re contributing content to the
                   online world. Make your URLs stand out with our easy-to-use
-                  free link shortener above.`
+                  free link shortener above.
                 </>
               ),
             },
@@ -117,7 +119,7 @@ const Content = () => {
             },
             {
               title: 'Why Choose Shorts?',
-              subtitle: `Whether you’re sharing one link or millions, our platform was built to help you make every point of connection between your content and your audience ignite action.`,
+              subtitle: `Whether you’re sharing one link or thousands, our platform was built to help you make every point of connection between your content and your audience ignite action.`,
             },
             {
               title: 'Can I See All The Links I Shortened?',
@@ -136,17 +138,17 @@ const Content = () => {
           items={[
             {
               title: 'Account Security',
-              subtitle: `Your Account information is protected by a password for your privacy and security. You can help prevent unauthorized access to your Account by selecting and protecting your password appropriately, or making use of one of the social logins, such as google sign in, and limiting access to your computer and browser by signing off after you have ﬁnished accessing your Account.`,
+              subtitle: `Your Account Security is protected by a one of the companies you decided to log in or sign up with, for your own privacy and security.`,
             },
 
             {
               title: 'Do You Sell Or Share My Information?',
               subtitle:
-                'Shorts does not sell any of your personal information. We do not share your personal information with third parties.',
+                'Shorts does not sell any of your personal information. We do not share your personal information with any third parties.',
             },
             {
               title: 'Can I Delete My Account?',
-              subtitle: `Yes, of course. You can delete your account at any time by logging to the user settings area, and press on "Delete Account". If you’re having trouble deleting your account, please contact us at`,
+              subtitle: `Yes, of course. You can delete your account at any time by sending us an email to nadavschwartz58@gmail.com`,
             },
           ]}
         />

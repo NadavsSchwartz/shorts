@@ -26,14 +26,15 @@ const ShortLinkForm = ({ isLandingPage }) => {
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     const urlRegex =
-      '(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^s]{2,}|www.[a-zA-Z0-9]+.[^s]{2,})';
+      '(.*(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^s]{2,}|www.[a-zA-Z0-9]+.[^s]{2,})';
 
     try {
-      const result = url.match(urlRegex);
-
+      const result = await url.match(urlRegex);
+      console.log(result);
       if (result !== null) {
         dispatch(createShortLink(url));
       }
+      console.log(error);
       SetUrl('');
     } catch (error) {
       SetError(`It looks like an invalid url. Please double check your input

@@ -1,13 +1,10 @@
 /* eslint-disable indent */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import 'chart.js/auto';
 import { Doughnut } from 'react-chartjs-2';
-import { Box, useTheme } from '@mui/material';
-
+import { Box } from '@mui/material';
+import PropTypes from 'prop-types';
 export const TrafficByDevice = ({ AllLocations }) => {
-  const theme = useTheme();
   const data = {
     datasets: [
       {
@@ -33,7 +30,7 @@ export const TrafficByDevice = ({ AllLocations }) => {
   let unique = {};
 
   if (AllLocations && AllLocations) {
-    AllLocations.forEach((linkData, index) => {
+    AllLocations.forEach((_, index) => {
       if (!unique[AllLocations[index].region]) {
         unique[AllLocations[index].region] = 1;
       } else {
@@ -42,10 +39,9 @@ export const TrafficByDevice = ({ AllLocations }) => {
     });
   }
 
-  Object.keys(unique).length !== 0 &&
-    Object.entries(unique && unique).forEach(([key, value]) => {
-      data.datasets[0].data.push(value), data.labels.push(key);
-    });
+  Object.entries(unique && unique).forEach(([key, value]) => {
+    data.datasets[0].data.push(value), data.labels.push(key);
+  });
 
   const options = {
     responsive: true,
@@ -62,5 +58,9 @@ export const TrafficByDevice = ({ AllLocations }) => {
       <Doughnut data={data} options={options} width={100} type="doughnut" />{' '}
     </Box>
   );
+};
+
+TrafficByDevice.propTypes = {
+  AllLocations: PropTypes.array.isRequired,
 };
 export default TrafficByDevice;

@@ -247,11 +247,6 @@ const EnhancedTable = ({ AllShortLinks }) => {
                             maxWidth: '300px',
                           }}
                         >
-                          <img
-                            width={16}
-                            src={Link && Link.siteIcon}
-                            alt="short link's Site icon"
-                          />
                           {Link && Link.longUrl}
                         </Typography>
                       </TableCell>
