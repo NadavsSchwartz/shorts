@@ -20,7 +20,6 @@ const app = express();
 await dotenv.config();
 // Load environment variables from .env file in non prod environments
 if (process.env.NODE_ENV === 'development') {
-	app.use(morgan('dev'));
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -29,6 +28,13 @@ if (process.env.NODE_ENV === 'production') {
 			return res.redirect(`https://${req.header('host')}${req.url}`);
 		else next();
 	});
+	app.use(express.static(path.join(__dirname, '/client/build')));
+
+	app.get('*', (req, res) =>
+		res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+	);
+} else {
+	app.use(morgan('dev'));
 }
 await connectDB();
 
