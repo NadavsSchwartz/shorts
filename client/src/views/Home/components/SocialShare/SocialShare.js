@@ -46,19 +46,19 @@ const SocialShare = ({ Link }) => {
           Successfully copied the short url!
         </Alert>
       </Snackbar>
-      <TwitterShareButton url={Link.shortUrl}>
+      <TwitterShareButton url={Link && Link.shortUrl}>
         <TwitterIcon size={36} round={true} />
       </TwitterShareButton>{' '}
-      <FacebookShareButton url={Link.shortUrl}>
+      <FacebookShareButton url={Link && Link.shortUrl}>
         <FacebookIcon size={36} round={true} />
       </FacebookShareButton>{' '}
-      <WhatsappShareButton title={Link.shortUrl}>
+      <WhatsappShareButton title={Link && Link.shortUrl}>
         <WhatsappIcon size={36} round={true} />
       </WhatsappShareButton>{' '}
-      <TelegramShareButton url={Link.shortUrl}>
+      <TelegramShareButton url={Link && Link.shortUrl}>
         <TelegramIcon size={36} round={true} />
       </TelegramShareButton>{' '}
-      <RedditShareButton url={Link.shortUrl}>
+      <RedditShareButton url={Link && Link.shortUrl}>
         <RedditIcon size={36} round={true} />
       </RedditShareButton>{' '}
       <Box component={'span'} sx={{ cursor: 'pointer' }}>
@@ -67,7 +67,7 @@ const SocialShare = ({ Link }) => {
           fontSize={'large'}
           onClick={() =>
             navigator.clipboard
-              .writeText(Link.shortUrl)
+              .writeText(Link && Link.shortUrl)
               .then(() => SetSuccessCopyUrlMessage(!successCopyUrlMessage))
           }
         />
@@ -91,10 +91,10 @@ const SocialShare = ({ Link }) => {
           alignItems="center"
         >
           <Typography variant="caption" sx={{ mb: 1 }}>
-            {Link.shortUrl}
+            {Link && Link.shortUrl}
           </Typography>
           <Grid container justifyContent="center" sx={{ mb: 4 }}>
-            <QRCode value={Link.shortUrl} level={'H'} />
+            <QRCode value={Link && Link.shortUrl} level={'H'} />
           </Grid>
         </Grid>
       </Dialog>

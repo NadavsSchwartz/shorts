@@ -79,7 +79,7 @@ const Landing = () => {
               <CardContent>
                 <Grid container sx={{ justifyContent: 'space-between' }}>
                   <Grid item>
-                    <Typography nowrap color="textPrimary" variant="body4">
+                    <Typography noWrap color="textPrimary" variant="body4">
                       {stats && stats.longUrl}
                     </Typography>
                     <Grid

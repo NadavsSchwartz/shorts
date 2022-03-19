@@ -1,8 +1,8 @@
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="260"
-                            viewBox="0 0 240 160"
                             width="340"
+                            viewBox="0 0 240 160"
                             className="injected-svg SpotIllustration--md"
                             data-src="https://dashboard-cdn.rebrandly.com/styleguide-assets/spot-illustrations/ill-spot-analytics-empty.svg"
                             xlink="http://www.w3.org/1999/xlink"

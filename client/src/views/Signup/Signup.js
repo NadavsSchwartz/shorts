@@ -6,9 +6,9 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Main from 'layouts/Main';
 import Container from 'components/Container';
-import { Form } from './components';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import SocialLogin from 'components/SocialLogin';
 const SignupSimple = () => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {
@@ -41,7 +41,7 @@ const SignupSimple = () => {
               xs={12}
               md={6}
             >
-              <Form />
+              <SocialLogin Header="New Account" Subtitle="SIGN UP WITH" />
             </Grid>
             {isMd ? (
               <Grid item container justifyContent={'center'} xs={12} md={6}>
