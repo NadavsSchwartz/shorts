@@ -99,11 +99,12 @@ const Landing = () => {
                           variant="body4"
                         >
                           <Box component="span" fontWeight="800">
-                            {stats &&
-                              stats.shortUrl.substring(
-                                7,
-                                stats.shortUrl.length,
-                              )}
+                            {stats && stats.shortUrl
+                              ? stats.shortUrl.substring(
+                                  7,
+                                  stats.shortUrl.length,
+                                )
+                              : ''}
                           </Box>
                         </Typography>
                       </a>
@@ -111,7 +112,7 @@ const Landing = () => {
                   </Grid>
 
                   <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-                    Created: {format(stats.createdAt)}
+                    Created: {format(stats && stats.createdAt)}
                   </Grid>
                 </Grid>
 
