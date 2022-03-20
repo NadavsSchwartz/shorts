@@ -15,7 +15,7 @@ export const getUserDetails = () => async (dispatch) => {
       withCredentials: true,
     };
 
-    const { data } = await axios.get(`http://localhost:4000/me`, config);
+    const { data } = await axios.get(`me`, config);
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -52,10 +52,7 @@ export const getUserStats = () => async (dispatch) => {
       withCredentials: true,
     };
 
-    const { data } = await axios.get(
-      `http://localhost:4000/user/stats`,
-      config,
-    );
+    const { data } = await axios.get(`user/stats`, config);
 
     dispatch({
       type: USER_STATS_SUCCESS,
@@ -90,10 +87,7 @@ export const userLogOut = () => async (dispatch) => {
       withCredentials: true,
     };
 
-    const { data } = await axios.get(
-      `http://localhost:4000/auth/logout`,
-      config,
-    );
+    const { data } = await axios.get(`auth/logout`, config);
 
     window.location.href = '/';
     dispatch({

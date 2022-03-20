@@ -10,7 +10,7 @@ export const deleteShortLink = (selectedLinksToDelete) => async (dispatch) => {
       type: DELETE_LINK_REQUEST,
     });
 
-    const { data } = await axios.delete('http://localhost:4000/delete/url', {
+    const { data } = await axios.delete('/delete/url', {
       withCredentials: true,
       data: { shortUrl: selectedLinksToDelete },
     });
@@ -43,7 +43,7 @@ export const createShortLink = (longUrlToShorten) => async (dispatch) => {
     });
 
     const { data } = await axios.post(
-      'http://localhost:4000/url',
+      '/url',
       {
         longUrl: longUrlToShorten,
       },

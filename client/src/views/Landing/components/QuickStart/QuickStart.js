@@ -46,12 +46,12 @@ const QuickStart = () => {
         bgcolor={'#21325b !important'}
       >
         {`
-> $ curl -XPOST -H "Content-type: application/json" -d '{"longUrl":"https://www.google.com"}' 'http://localhost:4000/url'
+> $ curl -XPOST -H "Content-type: application/json" -d '{"longUrl":"https://www.google.com"}' 'https://shorten.domains/url'
 
-// {"urlId":"yDDqG2s","longUrl":"https://www.google.com","shortUrl":"http://localhost:4000/Qri0_bg","siteIcon":"https://www.google.com/favicon.ico"}
+// {"urlId":"yDDqG2s","longUrl":"https://www.google.com","shortUrl":"https://shorten.domains/Qri0_bg","siteIcon":"https://www.google.com/favicon.ico"}
 
 
-> $ curl -XGET -H "Content-type: application/json" 'http://localhost:4000/url/yDDqG2s'
+> $ curl -XGET -H "Content-type: application/json" 'https://shorten.domains/url/yDDqG2s'
 
 // {"_id":"6233e5a5b3a12ac378c90c93","totalClicks":0,"location":[],"clicks":[],"createdAt":"2022-03-18T01:51:33.932Z","updatedAt":"2022-03-18T01:51:34.075Z"}
         `}

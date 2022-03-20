@@ -9,13 +9,13 @@ import { ReactComponent as TwitterLogo } from '../../assets/twitterLogo.svg';
 import GitHubIcon from '../../assets/GitHub.png';
 const SocialLogin = ({ Header, Subtitle }) => {
   const googleLogin = () => {
-    window.open('http://localhost:4000/auth/google', '_self');
+    window.open('/auth/google', '_self');
   };
   const twitterLogin = () => {
-    window.open('http://localhost:4000/auth/twitter', '_self');
+    window.open('/auth/twitter', '_self');
   };
   const githubLogin = () => {
-    window.open('http://localhost:4000/auth/github', '_self');
+    window.open('/auth/github', '_self');
   };
   return (
     <Box>
