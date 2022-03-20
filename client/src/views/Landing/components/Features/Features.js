@@ -23,7 +23,8 @@ const mock = [
   },
   {
     title: 100,
-    subtitle: 'links can be created FREELY every day as a user, or up to 30 as a guest.',
+    subtitle:
+      'links can be created FREELY every day as a user, or up to 30 as a guest.',
     suffix: '',
   },
 ];
