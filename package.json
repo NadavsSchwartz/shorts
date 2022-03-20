@@ -5,11 +5,12 @@
     "homepage": "https://hotelrevealer.org",
     "version": "1.0.0",
     "private": true,
+    "type": "module",
+    "main": "app.js",
     "scripts": {
-        "start": "react-scripts start",
-        "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
-        "prettier:fix": "prettier './src/**/*.js' --write",
-        "eslint:fix": "eslint ./src --fix",
+        "start": "node server/app",
+        "prettier:fix": "prettier 'server/**/*.js' --write",
+        "eslint:fix": "eslint .client/src --fix",
         "codeStyle:fix": "npm run prettier:fix && npm run eslint:fix",
         "clear-all": "rimraf ./build ./node_modules",
         "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd client && yarn  && yarn run build"
