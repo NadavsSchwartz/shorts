@@ -43,6 +43,7 @@
         "@mui/icons-material": "^5.2.4",
         "@mui/material": "^5.2.4",
         "aos": "^2.3.4",
+        "axios": "^0.26.1",
         "chart.js": "^3.7.1",
         "prop-types": "^15.7.2",
         "qrcode.react": "^2.0.0",
