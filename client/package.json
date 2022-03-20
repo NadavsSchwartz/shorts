@@ -5,9 +5,6 @@
     "homepage": "https://shorten.domains",
     "version": "1.0.0",
     "private": true,
-    "engines": {
-        "node": "16.13.1"
-    },
     "scripts": {
         "start": "react-scripts start",
         "build": "GENERATE_SOURCEMAP=false react-scripts build"
