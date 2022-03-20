@@ -101,9 +101,9 @@ const Landing = () => {
                           <Box component="span" fontWeight="800">
                             {stats && stats.shortUrl
                               ? stats.shortUrl.substring(
-                                  7,
-                                  stats.shortUrl.length,
-                                )
+                                7,
+                                stats.shortUrl.length,
+                              )
                               : ''}
                           </Box>
                         </Typography>
