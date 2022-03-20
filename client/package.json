@@ -2,16 +2,15 @@
     "name": "shorts",
     "author": "Nadav",
     "email": "nadavschwartz58@gmail.com",
+    "homepage": "https://shorten.domains",
     "version": "1.0.0",
     "private": true,
+    "engines": {
+        "node": "16.13.1"
+    },
     "scripts": {
         "start": "react-scripts start",
-        "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
-        "prettier:fix": "prettier './src/**/*.js' --write",
-        "eslint:fix": "eslint ./src --fix",
-        "codeStyle:fix": "npm run prettier:fix && npm run eslint:fix",
-        "clear-all": "rimraf ./build ./node_modules",
-        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn --prefix client && yarn run build --prefix client"
+        "build": "GENERATE_SOURCEMAP=false react-scripts build"
     },
     "browserslist": {
         "production": [
