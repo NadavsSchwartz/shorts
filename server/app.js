@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import express from 'express';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import connectDB from './config/MongoDB.js';
 import ShortenedLinkRoutes from './routes/ShortenedLinkRoutes.js';
 import UserRoutes from './routes/UserRoutes.js';
@@ -67,9 +68,7 @@ app.set('trust proxy', 1);
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false,
-		cookie: {},
+		store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
 	})
 );
 
