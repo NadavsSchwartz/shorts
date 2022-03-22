@@ -15,7 +15,7 @@ import User from './models/userModel.js'
 import './strategies/GoogleStrategy.js'
 import './strategies/TwitterStrategy.js'
 import './strategies/GithubStrategy.js'
-
+import helmet from 'helmet'
 const app = express()
 
 dotenv.config()
@@ -25,8 +25,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 connectDB()
 
-app.use(express.json())
 app.set('trust proxy', true)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(helmet())
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 // Add the domains to the CORS policy
@@ -68,15 +70,11 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 passport.serializeUser((user, done) => {
-    console.log('seri user:', user)
     return done(null, user._id)
 })
 
 passport.deserializeUser((id, done) =>
-    User.findById(id, (err, doc) =>
-        // Whatever we return goes to the client and binds to the req.user property
-        done(null, doc)
-    )
+    User.findById(id, (err, doc) => done(null, doc))
 )
 
 const apiLimiter = rateLimit({
@@ -91,7 +89,6 @@ const apiLimiter = rateLimit({
     message: 'You have reached your daily quota.',
 })
 
-// Apply the rate limiting middleware to API calls only
 app.use('/url', apiLimiter)
 app.use('/', UserRoutes)
 app.use('/', ShortenedLinkRoutes)
