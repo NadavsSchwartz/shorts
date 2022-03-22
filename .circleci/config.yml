@@ -19,7 +19,7 @@ jobs:
           command: yarn
           name: install dependencies app
       - persist_to_workspace:
-          root: ~/home/shorts
+          root: /home/shorts
           paths:
             - .
 
@@ -28,7 +28,7 @@ jobs:
       - image: cimg/node:17.2.0
     steps:
       - attach_workspace:
-          at: ~/home/shorts
+          at: /home/shorts
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
