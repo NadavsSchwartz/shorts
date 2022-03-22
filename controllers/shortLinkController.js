@@ -1,28 +1,28 @@
-import ShortLink from "../models/shortLinkModel.js";
-import Analytics from "../models/analyticsModel.js";
+import { nanoid } from 'nanoid';
+import axios from 'axios';
+import ShortLink from '../models/shortLinkModel.js';
+import Analytics from '../models/analyticsModel.js';
 
-import { nanoid } from "nanoid";
-import axios from "axios";
-const shortBaseUrl = "http://localhost:4000";
+const shortBaseUrl = 'http://localhost:4000';
 
 // @desc    delete Shortened Link Analytics
 // @route   DELETE /url
 export const deleteShortLink = async (req, res) => {
   const { shortUrl } = req.body;
-  if (!shortUrl) return res.status(404).json({ message: "no link found" });
+  if (!shortUrl) return res.status(404).json({ message: 'no link found' });
   const isShortLink = await ShortLink.findOne({
-    shortUrl: shortUrl,
+    shortUrl,
   });
   if (isShortLink) {
     await isShortLink.remove();
     const ShortLinksAnalytics = await ShortLink.find({
       user: req.user._id,
     }).populate({
-      path: "analytics",
+      path: 'analytics',
       options: { sort: { created_at: -1 } },
     });
     let AllClicks = 0;
-    let AllLocations = [];
+    const AllLocations = [];
     const modifiedAnalytics = [];
 
     await ShortLinksAnalytics.map((Link) => {
@@ -30,8 +30,7 @@ export const deleteShortLink = async (req, res) => {
       AllClicks = Link.analytics.totalClicks + AllClicks;
 
       // calculate all locations of each non empty clicks location for easy management in front end
-      if (Link.analytics.location.length !== 0)
-        AllLocations.push(Link.analytics.location);
+      if (Link.analytics.location.length !== 0) AllLocations.push(Link.analytics.location);
 
       // modify the array of object of ShortLinks and Analytics for easier management in front end
       modifiedAnalytics.push({
@@ -50,42 +49,40 @@ export const deleteShortLink = async (req, res) => {
       Analytics: modifiedAnalytics,
       TotalClicks: AllClicks || 0,
       TotalLinks: modifiedAnalytics.length,
-      AllLocations: AllLocations,
+      AllLocations,
     });
-  } else {
-    res.status(404);
-    return new Error("Short Link not found");
   }
+  res.status(404);
+  return new Error('Short Link not found');
 };
 
 // @desc    Create New Shortened Link
 // @route   POST /url
 export const createNewShortenedLink = async (req, res) => {
   // checks if there is long url within the request body
-  if (req.body.longUrl)
+  if (req.body.longUrl) {
     try {
       let isUrlContainProtocol = req.body.longUrl;
 
-      //adds scheme to url if it doesn't exists
+      // adds scheme to url if it doesn't exists
       if (
-        !isUrlContainProtocol.indexOf("http://") == 0 &&
-        !isUrlContainProtocol.indexOf("https://") == 0
-      )
-        isUrlContainProtocol = `http://${req.body.longUrl}`;
+        !isUrlContainProtocol.indexOf('http://') == 0
+        && !isUrlContainProtocol.indexOf('https://') == 0
+      ) isUrlContainProtocol = `http://${req.body.longUrl}`;
 
       const url = new URL(isUrlContainProtocol);
       const urlOrigin = url.origin;
 
       const { longUrl } = req.body;
 
-      //generate unique 7 character long id for the short url
+      // generate unique 7 character long id for the short url
       const newUrlId = await nanoid(7);
 
-      //checks if the short URL id already exists to avoid duplicate
+      // checks if the short URL id already exists to avoid duplicate
       const isUrlIdExists = await ShortLink.find({ urlId: newUrlId });
       if (isUrlIdExists.length === 0);
       {
-        const shortUrl = shortBaseUrl + "/" + newUrlId;
+        const shortUrl = `${shortBaseUrl}/${newUrlId}`;
         const siteIcon = `${urlOrigin}/favicon.ico`;
         const newAnalytics = new Analytics();
         await newAnalytics.save();
@@ -107,23 +104,22 @@ export const createNewShortenedLink = async (req, res) => {
           const ShortLinksAnalytics = await ShortLink.find({
             user: req.user._id,
           }).populate({
-            path: "analytics",
+            path: 'analytics',
             options: { sort: { created_at: -1 } },
           });
 
           let AllClicks = 0;
 
-          let AllLocations = [];
+          const AllLocations = [];
 
           const modifiedAnalytics = [];
 
           await ShortLinksAnalytics.map((Link) => {
-            // calculate total clicks of all links for easy management in front end
+          // calculate total clicks of all links for easy management in front end
             AllClicks = Link.analytics.totalClicks + AllClicks;
 
             // calculate all locations of each non empty clicks location for easy management in front end
-            if (Link.analytics.location.length !== 0)
-              AllLocations.push(Link.analytics.location);
+            if (Link.analytics.location.length !== 0) AllLocations.push(Link.analytics.location);
 
             // modify the array of object of ShortLinks and Analytics for easier management in front end
             modifiedAnalytics.push({
@@ -142,21 +138,21 @@ export const createNewShortenedLink = async (req, res) => {
             Analytics: modifiedAnalytics,
             TotalClicks: AllClicks || 0,
             TotalLinks: modifiedAnalytics.length,
-            AllLocations: AllLocations,
+            AllLocations,
           });
         }
         await NewShortLink.populate({
-          path: "analytics",
+          path: 'analytics',
           options: { sort: { created_at: -1 } },
         });
         return res.status(200).json(NewShortLink);
       }
     } catch (error) {
       console.error(error);
-      return res.status(401).json({ error: error });
+      return res.status(401).json({ error });
     }
-  else {
-    return res.status(401).json({ message: "longUrl is required" });
+  } else {
+    return res.status(401).json({ message: 'longUrl is required' });
   }
 };
 
@@ -167,16 +163,17 @@ export const redirectToShortenedLink = async (req, res) => {
   let foundShortenedLink;
 
   try {
-    if (shortenedLinkId)
+    if (shortenedLinkId) {
       foundShortenedLink = await ShortLink.findOne({
         urlId: shortenedLinkId,
       });
+    }
     if (foundShortenedLink) {
       const { data } = await axios.get(
-        `https://ipinfo.io/json?token=${process.env.IPINFO_TOKEN}`
+        `https://ipinfo.io/json?token=${process.env.IPINFO_TOKEN}`,
       );
 
-      const currentTime = new Date().toISOString().split("T", 1)[0];
+      const currentTime = new Date().toISOString().split('T', 1)[0];
 
       await Analytics.findOneAndUpdate(
         {
@@ -189,7 +186,7 @@ export const redirectToShortenedLink = async (req, res) => {
           },
           $inc: { totalClicks: 1 },
         },
-        { upsert: true, returnDocument: "after" }
+        { upsert: true, returnDocument: 'after' },
       );
 
       return res.redirect(foundShortenedLink.longUrl);
@@ -207,13 +204,14 @@ export const getShortenedLinkAanlytics = async (req, res) => {
   let foundShortenedLink;
 
   try {
-    if (urlId)
+    if (urlId) {
       foundShortenedLink = await ShortLink.findOne({
-        urlId: urlId,
+        urlId,
       });
+    }
     if (foundShortenedLink) {
       await foundShortenedLink.populate({
-        path: "analytics",
+        path: 'analytics',
         options: { sort: { created_at: -1 } },
       });
       return res.status(200).json(foundShortenedLink);

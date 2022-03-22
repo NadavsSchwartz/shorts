@@ -1,18 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      default: "",
+      default: '',
     },
     firstName: {
       type: String,
-      default: "",
+      default: '',
     },
     lastName: {
       type: String,
-      default: "",
+      default: '',
     },
     email: {
       type: String,
@@ -25,7 +25,7 @@ const userSchema = mongoose.Schema(
 
     googleId: {
       type: String,
-      default: "",
+      default: '',
     },
 
     avatar: {
@@ -40,14 +40,14 @@ const userSchema = mongoose.Schema(
       type: String,
     },
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true, toJSON: { virtuals: true } },
 );
 
-userSchema.virtual("ShortLinks", {
-  ref: "ShortLink",
-  foreignField: "user",
-  localField: "_id",
+userSchema.virtual('ShortLinks', {
+  ref: 'ShortLink',
+  foreignField: 'user',
+  localField: '_id',
 });
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;

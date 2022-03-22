@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const linkSchema = mongoose.Schema(
   {
@@ -22,15 +22,15 @@ const linkSchema = mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     analytics: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Analytics",
+      ref: 'Analytics',
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
-const ShortLink = mongoose.model("ShortLink", linkSchema);
+const ShortLink = mongoose.model('ShortLink', linkSchema);
 
 export default ShortLink;

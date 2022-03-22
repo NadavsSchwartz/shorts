@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const analyticsSchema = mongoose.Schema(
   {
@@ -9,7 +9,7 @@ const analyticsSchema = mongoose.Schema(
     },
     shortLink: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ShortLink",
+      ref: 'ShortLink',
     },
     location: {
       type: Array,
@@ -17,7 +17,7 @@ const analyticsSchema = mongoose.Schema(
     },
     clicks: { type: Array, require: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
-const Analytics = mongoose.model("Analytics", analyticsSchema);
+const Analytics = mongoose.model('Analytics', analyticsSchema);
 export default Analytics;

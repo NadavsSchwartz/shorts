@@ -1,19 +1,16 @@
 {
     "name": "shorts",
     "author": "Nadav",
-    "email": "nadavschwartz58@gmail.com",
-    "homepage": "https://hotelrevealer.org",
     "version": "1.0.0",
-    "private": true,
+    "private": false,
     "type": "module",
     "main": "app.js",
     "scripts": {
-        "start": "node server/app",
-        "prettier:fix": "prettier 'server/**/*.js' --write",
-        "eslint:fix": "eslint .client/src --fix",
-        "codeStyle:fix": "npm run prettier:fix && npm run eslint:fix",
-        "clear-all": "rimraf ./build ./node_modules",
-        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd client && yarn  && yarn run build"
+        "start": "node app",
+        "prettier:fix": "prettier './*.js' --write",
+        "eslint:fix": "eslint ./ --fix",
+        "codeStyle:fix": "yarn prettier:fix && yarn eslint:fix",
+        "clear-all": "rimraf ./build ./node_modules"
     },
     "browserslist": {
         "production": [
@@ -48,10 +45,14 @@
         "passport-github2": "^0.1.12",
         "passport-google-oauth20": "^2.0.0",
         "passport-twitter": "^1.0.4",
-        "path": "^0.12.7",
+        "prettier": "^2.6.0",
         "yarn": "^1.22.17"
     },
     "devDependencies": {
+        "eslint": "^8.11.0",
+        "eslint-config-prettier": "^8.5.0",
         "tap": "^15.1.6"
-    }
+    },
+    "repository": "https://github.com/NadavsSchwartz/shorts.git",
+    "license": "MIT"
 }

@@ -1,7 +1,8 @@
-import passport from "passport";
-import GoogleStrategy from "passport-google-oauth20";
-import User from "../models/userModel.js";
-import dotenv from "dotenv";
+import passport from 'passport';
+import GoogleStrategy from 'passport-google-oauth20';
+import dotenv from 'dotenv';
+import User from '../models/userModel.js';
+
 dotenv.config();
 
 passport.use(
@@ -9,11 +10,11 @@ passport.use(
     {
       clientID: `${process.env.GOOGLE_CLIENT_ID}`,
       clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-      callbackURL: "/auth/google/callback",
+      callbackURL: '/auth/google/callback',
     },
-    function (_, __, profile, email, cb) {
+    ((_, __, profile, email, cb) => {
       const userEmail = email.emails[0].value;
-      console.log(_, __, profile, email);
+
       const Avatar = email.photos[0].value;
       User.findOne({ googleId: email.id }, async (err, doc) => {
         if (err) {
@@ -35,16 +36,14 @@ passport.use(
 
         cb(null, doc);
       });
-    }
-  )
+    }),
+  ),
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
   done(null, user);
 });
 
 passport.deserializeUser((id, done) => {
-  User.findById(id, (err, doc) => {
-    return done(null, doc);
-  });
+  User.findById(id, (err, doc) => done(null, doc));
 });
