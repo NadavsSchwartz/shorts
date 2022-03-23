@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import session from 'express-session'
-import MongoStore from 'connect-mongo'
 import morgan from 'morgan'
 import cors from 'cors'
 import passport from 'passport'
@@ -54,14 +53,14 @@ app.set('trust proxy', 1)
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
-        resave: true,
+        resave: false,
         saveUninitialized: true,
+        proxy: true,
         cookie: {
             sameSite: 'none',
             secure: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7, // One Week
+            httpOnly: false,
         },
-        store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     })
 )
 
