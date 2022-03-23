@@ -8,11 +8,11 @@ const shortBaseUrl = 'https://sds.sh'
 // @desc    delete Shortened Link Analytics
 // @route   DELETE /delete/:id
 export const deleteShortLink = async (req, res) => {
-    const { urlId } = req.params.id
+    const { urlId } = req.params.urlId
     if (!urlId) return res.status(404).json({ message: 'url id is required' })
     const isShortLink = await ShortLink.findOne(
         {
-            urlId,
+            urlId: urlId,
         },
         '-user -__v'
     )
