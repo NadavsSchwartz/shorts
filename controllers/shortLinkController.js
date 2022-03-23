@@ -103,11 +103,15 @@ export const createNewShortenedLink = async (req, res) => {
                 await newAnalytics.updateOne({ shortLink: NewShortLink._id })
                 await newAnalytics.save()
                 if (req.user) {
-                    const ShortLinksAnalytics = await ShortLink.find({
-                        user: req.user._id,
-                    }).populate({
+                    const ShortLinksAnalytics = await ShortLink.find(
+                        {
+                            user: req.user._id,
+                        },
+                        '-user -__v'
+                    ).populate({
                         path: 'analytics',
                         options: { sort: { created_at: -1 } },
+                        select: '-shortLink -_id -__v',
                     })
 
                     let AllClicks = 0
@@ -209,14 +213,18 @@ export const getShortenedLinkAanlytics = async (req, res) => {
 
     try {
         if (urlId) {
-            foundShortenedLink = await ShortLink.findOne({
-                urlId,
-            })
+            foundShortenedLink = await ShortLink.findOne(
+                {
+                    urlId,
+                },
+                '-user -__v'
+            )
         }
         if (foundShortenedLink) {
             await foundShortenedLink.populate({
                 path: 'analytics',
                 options: { sort: { created_at: -1 } },
+                select: '-shortLink -_id -__v',
             })
             return res.status(200).json(foundShortenedLink)
         }
