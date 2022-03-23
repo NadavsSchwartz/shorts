@@ -33,9 +33,7 @@ app.use(helmet())
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 // Add the domains to the CORS policy
-const whitelist = process.env.WHITELISTED_DOMAINS
-    ? process.env.WHITELISTED_DOMAINS.split(',')
-    : 'https://shorten.domains'
+const whitelist = ['https://shorten.domains', 'https://shorts-client.pages.dev']
 
 const corsOptions = {
     origin(origin, callback) {

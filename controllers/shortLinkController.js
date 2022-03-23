@@ -6,13 +6,16 @@ import Analytics from '../models/analyticsModel.js'
 const shortBaseUrl = 'https://sds.sh'
 
 // @desc    delete Shortened Link Analytics
-// @route   DELETE /url
+// @route   DELETE /delete/:id
 export const deleteShortLink = async (req, res) => {
-    const { shortUrl } = req.body
-    if (!shortUrl) return res.status(404).json({ message: 'no link found' })
-    const isShortLink = await ShortLink.findOne({
-        shortUrl,
-    })
+    const { urlId } = req.params.id
+    if (!urlId) return res.status(404).json({ message: 'url id is required' })
+    const isShortLink = await ShortLink.findOne(
+        {
+            urlId,
+        },
+        '-user -__v'
+    )
     if (isShortLink) {
         await isShortLink.remove()
         const ShortLinksAnalytics = await ShortLink.find({
@@ -20,6 +23,7 @@ export const deleteShortLink = async (req, res) => {
         }).populate({
             path: 'analytics',
             options: { sort: { created_at: -1 } },
+            select: '-shortLink -_id -__v',
         })
         let AllClicks = 0
         const AllLocations = []
@@ -81,6 +85,7 @@ export const createNewShortenedLink = async (req, res) => {
             const newUrlId = await nanoid(7)
 
             // checks if the short URL id already exists to avoid duplicate
+            //todo - move into a util function to also handle case of duplicate
             const isUrlIdExists = await ShortLink.find({ urlId: newUrlId })
             if (isUrlIdExists.length === 0);
             {
@@ -88,7 +93,7 @@ export const createNewShortenedLink = async (req, res) => {
                 const siteIcon = `${urlOrigin}/favicon.ico`
                 const newAnalytics = new Analytics()
                 await newAnalytics.save()
-                const itemToBeSaved = {
+                const linkToBeSaved = {
                     longUrl,
                     shortUrl,
                     siteIcon,
@@ -97,8 +102,8 @@ export const createNewShortenedLink = async (req, res) => {
                     analytics: newAnalytics._id,
                 }
 
-                // Add the item to db
-                const NewShortLink = new ShortLink(itemToBeSaved)
+                // Add the link to db
+                const NewShortLink = new ShortLink(linkToBeSaved)
                 await NewShortLink.save()
                 await newAnalytics.updateOne({ shortLink: NewShortLink._id })
                 await newAnalytics.save()
@@ -150,7 +155,7 @@ export const createNewShortenedLink = async (req, res) => {
                 }
                 await NewShortLink.populate({
                     path: 'analytics',
-                    options: { sort: { created_at: -1 } },
+                    select: '-shortLink -_id -__v',
                 })
                 return res.status(200).json(NewShortLink)
             }
