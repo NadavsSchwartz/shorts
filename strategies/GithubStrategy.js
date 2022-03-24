@@ -1,3 +1,4 @@
+import e from 'express'
 import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import User from '../models/userModel.js'
@@ -11,23 +12,32 @@ passport.use(
             scope: 'user:email',
         },
         (_, __, profile, cb) => {
-            User.findOne({ githubId: profile.id }, async (err, doc) => {
+            const userEmail = profile.emails[0].value
+            User.findOne({ email: userEmail }, async (err, doc) => {
                 if (err) {
                     return cb(err, null)
                 }
 
                 if (!doc) {
-                    const newUser = new User({
-                        githubId: profile.id,
-                        email: profile.emails[0].value,
-                        name: profile.displayName
-                            ? profile.displayName
-                            : profile.username,
-                        avatar: profile.photos[0].value,
-                    })
+                    try {
+                        const newUser = new User({
+                            githubId: profile.id,
+                            email: userEmail,
+                            name: profile.displayName
+                                ? profile.displayName
+                                : profile.username,
+                            avatar: profile.photos[0].value,
+                        })
 
-                    await newUser.save()
-                    cb(null, newUser)
+                        await newUser.save()
+                        cb(null, newUser)
+                    } catch (error) {
+                        cb(error, null)
+                    }
+                } else {
+                    doc.githubId = profile.id
+                    await doc.save()
+                    cb(null, doc)
                 }
                 cb(null, doc)
             })
