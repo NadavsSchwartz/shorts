@@ -33,9 +33,16 @@ app.use(helmet())
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 // Add the domains to the CORS policy
-const whitelist = ['https://shorten.domains', 'https://shorts-client.pages.dev']
+const whitelist = [
+    'https://shorten.domains',
+    'https://shorts-client.pages.dev',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
 
 const corsOptions = {
+    credentials: true,
+    allowedHeaders: ['Origin, X-Requested-With, Content-Type, Accept'],
     origin(origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
             callback(null, true)
@@ -43,8 +50,6 @@ const corsOptions = {
             callback(new Error('Not allowed by CORS'))
         }
     },
-
-    credentials: true,
 }
 
 app.use(cors(corsOptions))
