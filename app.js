@@ -26,7 +26,12 @@ if (process.env.NODE_ENV === 'development') {
 }
 connectDB()
 app.use((req, res, next) => {
-    res.header({ 'Access-Control-Allow-Origin': '*' })
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader(
+        'Access-Control-Allow-Methods',
+        'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+    )
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     next()
 })
 app.set('trust proxy', true)
@@ -45,7 +50,7 @@ const whitelist = [
 
 const corsOptions = {
     credentials: true,
-    allowedHeaders: ['Origin, X-Requested-With, Content-Type, Accept'],
+
     origin(origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
             callback(null, true)
