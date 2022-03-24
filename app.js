@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import session from 'express-session'
 import morgan from 'morgan'
-import cors from 'cors'
+// import cors from 'cors'
 import passport from 'passport'
 import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
@@ -26,12 +26,16 @@ if (process.env.NODE_ENV === 'development') {
 }
 connectDB()
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader(
-        'Access-Control-Allow-Methods',
-        'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+    res.header('Access-Control-Allow-Origin', req.header('Origin'))
+    res.header('Access-Control-Allow-Credentials', true)
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
     )
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    res.header(
+        'Access-Control-Allow-Methods',
+        'GET, POST, OPTIONS, PUT, DELETE'
+    )
     next()
 })
 app.set('trust proxy', true)
@@ -41,26 +45,26 @@ app.use(helmet())
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 // Add the domains to the CORS policy
-const whitelist = [
-    'https://shorten.domains',
-    'https://shorts-client.pages.dev',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
+// const whitelist = [
+//     'https://shorten.domains',
+//     'https://shorts-client.pages.dev',
+//     'http://localhost:3000',
+//     'http://127.0.0.1:3000',
+// ]
 
-const corsOptions = {
-    credentials: true,
+// const corsOptions = {
+//     credentials: true,
 
-    origin(origin, callback) {
-        if (!origin || whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    },
-}
+//     origin(origin, callback) {
+//         if (!origin || whitelist.indexOf(origin) !== -1) {
+//             callback(null, true)
+//         } else {
+//             callback(new Error('Not allowed by CORS'))
+//         }
+//     },
+// }
 
-app.use(cors(corsOptions))
+// app.use(cors(corsOptions))
 
 app.set('trust proxy', 1)
 
