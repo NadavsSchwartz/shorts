@@ -15,6 +15,7 @@ import './strategies/GoogleStrategy.js'
 import './strategies/TwitterStrategy.js'
 import './strategies/GithubStrategy.js'
 import helmet from 'helmet'
+import MongoStore from 'connect-mongo'
 
 const app = express()
 
@@ -61,6 +62,7 @@ app.use(
             secure: true,
             httpOnly: false,
         },
+        store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     })
 )
 

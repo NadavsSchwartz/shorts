@@ -18,6 +18,7 @@ export const deleteShortLink = async (req, res) => {
     )
     if (isShortLink) {
         await isShortLink.remove()
+
         const ShortLinksAnalytics = await ShortLink.find({
             user: req.user._id,
         }).populate({
