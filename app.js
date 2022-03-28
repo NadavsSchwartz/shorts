@@ -75,7 +75,11 @@ app.use(
         resave: false,
         saveUninitialized: true,
         proxy: true,
-
+        cookie: {
+            sameSite: 'none',
+            secure: true,
+            httpOnly: false,
+        },
         store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     })
 )
