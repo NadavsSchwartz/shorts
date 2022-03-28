@@ -21,7 +21,9 @@ router.get(
         failureMessage: true,
         session: true,
     }),
-    asyncHandler((req, res) => res.redirect('http://localhost:3000/home'))
+    asyncHandler((req, res) => {
+        return res.redirect(`${process.env.FRONT_END_URL}/home`)
+    })
 )
 
 router.get(
