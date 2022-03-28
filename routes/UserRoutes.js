@@ -54,21 +54,24 @@ router.get(
         session: true,
         failureMessage: true,
     }),
-    (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
+    asyncHandler((req, res) => {
+        return res.redirect(`${process.env.FRONT_END_URL}/home`)
+    })
 )
 
-router.get('/auth/github', asyncHandler(passport.authenticate('github')))
+router.get('/auth/github', passport.authenticate('github'))
 
 router.get(
     '/auth/github/callback',
-    asyncHandler(
-        passport.authenticate('github', {
-            failureRedirect: `${process.env.FRONT_END_URL}/signin`,
-            session: true,
-            failureMessage: true,
-        }),
-        (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
-    )
+
+    passport.authenticate('github', {
+        failureRedirect: `${process.env.FRONT_END_URL}/signin`,
+        session: true,
+        failureMessage: true,
+    }),
+    asyncHandler((req, res) => {
+        return res.redirect(`${process.env.FRONT_END_URL}/home`)
+    })
 )
 
 router.get('/user/stats', asyncHandler(getUserStats))
