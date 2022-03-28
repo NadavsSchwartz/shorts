@@ -1,4 +1,5 @@
-import express from 'express'
+import { Router } from 'express'
+import asyncHandler from 'express-async-handler'
 import {
     createNewShortenedLink,
     redirectToShortenedLink,
@@ -6,11 +7,11 @@ import {
     getShortenedLinkAanlytics,
 } from '../controllers/shortLinkController.js'
 
-const router = express.Router()
+const router = Router()
 
-router.route('/:id').get(redirectToShortenedLink)
-router.route('/url').post(createNewShortenedLink)
-router.route('/delete/:urlId').delete(deleteShortLink)
-router.route('/url/:id').get(getShortenedLinkAanlytics)
+router.route('/:id').get(asyncHandler(redirectToShortenedLink))
+router.route('/url').post(asyncHandler(createNewShortenedLink))
+router.route('/delete/:urlId').delete(asyncHandler(deleteShortLink))
+router.route('/url/:id').get(asyncHandler(getShortenedLinkAanlytics))
 
 export default router

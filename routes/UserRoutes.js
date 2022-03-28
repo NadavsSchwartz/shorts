@@ -1,14 +1,17 @@
-import express from 'express'
+import { Router } from 'express'
+import asyncHandler from 'express-async-handler'
 import passport from 'passport'
 import { getUserStats } from '../controllers/userController.js'
 
-const router = express.Router()
+const router = Router()
 
 router.get(
     '/auth/google',
-    passport.authenticate('google', {
-        scope: ['openid', 'profile', 'email'],
-    })
+    asyncHandler(
+        passport.authenticate('google', {
+            scope: ['openid', 'profile', 'email'],
+        })
+    )
 )
 
 router.get(
@@ -18,45 +21,61 @@ router.get(
         failureMessage: true,
         session: true,
     }),
-    (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
+    asyncHandler((req, res) =>
+        res.redirect(`${process.env.FRONT_END_URL}/home`)
+    )
 )
 
-router.get('/auth/logout', async (req, res) => {
-    if (req.user) {
-        await req.session.destroy()
-        await res.clearCookie('connect.sid')
-        return res.status(200).json({ message: 'logout success' })
-    }
-    return res.status(200).json({ message: 'no user to log out!' })
-})
-router.get('/me', (req, res) => {
-    if (req.user) return res.send(req.user)
-    return res.status(400).json({ message: 'no user found' })
-})
+router.get(
+    '/auth/logout',
+    asyncHandler(async (req, res) => {
+        if (req.user) {
+            await req.session.destroy()
+            await res.clearCookie('connect.sid')
+            return res.status(200).json({ message: 'logout success' })
+        }
+        return res.status(200).json({ message: 'no user to log out!' })
+    })
+)
 
-router.get('/auth/twitter', passport.authenticate('twitter'))
+router.get(
+    '/me',
+    asyncHandler((req, res) => {
+        if (req.user) return res.send(req.user)
+        return res.status(400).json({ message: 'no user found' })
+    })
+)
+
+router.get('/auth/twitter', asyncHandler(passport.authenticate('twitter')))
 
 router.get(
     '/auth/twitter/callback',
-    passport.authenticate('twitter', {
-        failureRedirect: `${process.env.FRONT_END_URL}/signin`,
-        session: true,
-        failureMessage: true,
-    }),
-    (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
+    asyncHandler(
+        passport.authenticate('twitter', {
+            failureRedirect: `${process.env.FRONT_END_URL}/signin`,
+            session: true,
+            failureMessage: true,
+        }),
+        (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
+    )
 )
 
-router.get('/auth/github', passport.authenticate('github'))
+router.get('/auth/github', asyncHandler(passport.authenticate('github')))
 
 router.get(
     '/auth/github/callback',
-    passport.authenticate('github', {
-        failureRedirect: `${process.env.FRONT_END_URL}/signin`,
-        session: true,
-        failureMessage: true,
-    }),
-    (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
+    asyncHandler(
+        passport.authenticate('github', {
+            failureRedirect: `${process.env.FRONT_END_URL}/signin`,
+            session: true,
+            failureMessage: true,
+        }),
+        (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
+    )
 )
-router.get('/user/stats', getUserStats)
+
+router.get('/user/stats', asyncHandler(getUserStats))
+
+// router.post('/auth/apiKey', asyncHandler(generateApiKey))
 
 export default router
