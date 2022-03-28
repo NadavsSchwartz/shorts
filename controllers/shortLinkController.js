@@ -2,7 +2,8 @@ import { nanoid } from 'nanoid'
 import axios from 'axios'
 import ShortLink from '../models/shortLinkModel.js'
 import Analytics from '../models/analyticsModel.js'
-
+import isbot from 'isbot'
+import { UnifyResponseObject } from '../utils/UnifyResponseObject.js'
 const shortBaseUrl = 'https://sds.sh'
 
 // @desc    delete Shortened Link Analytics
@@ -16,226 +17,144 @@ export const deleteShortLink = async (req, res) => {
         },
         '-user -__v'
     )
-    if (isShortLink) {
-        await isShortLink.remove()
+    if (!isShortLink) throw new Error('Short Link not found')
 
-        const ShortLinksAnalytics = await ShortLink.find({
-            user: req.user._id,
-        }).populate({
-            path: 'analytics',
-            options: { sort: { created_at: -1 } },
-            select: '-shortLink -_id -__v',
-        })
-        let AllClicks = 0
-        const AllLocations = []
-        const modifiedAnalytics = []
+    await isShortLink.remove()
 
-        await ShortLinksAnalytics.map((Link) => {
-            // calculate total clicks of all links for easy management in front end
-            AllClicks = Link.analytics.totalClicks + AllClicks
+    const ShortLinksAnalytics = await ShortLink.find({
+        user: req.user._id,
+    }).populate({
+        path: 'analytics',
+        options: { sort: { created_at: -1 } },
+        select: '-shortLink -_id -__v',
+    })
+    const unifiedResponseObject = await UnifyResponseObject(ShortLinksAnalytics)
 
-            // calculate all locations of each non empty clicks location for easy management in front end
-            if (Link.analytics.location.length !== 0)
-                AllLocations.push(Link.analytics.location)
-
-            // modify the array of object of ShortLinks and Analytics for easier management in front end
-            modifiedAnalytics.push({
-                id: Link._id,
-                shortUrl: Link.shortUrl,
-                siteIcon: Link.siteIcon,
-                longUrl: Link.longUrl,
-                createdAt: Link.createdAt,
-                totalClicks: Link.analytics.totalClicks,
-                clicks: Link.analytics.clicks,
-                location: Link.analytics.location,
-            })
-        })
-
-        return res.status(200).json({
-            Analytics: modifiedAnalytics,
-            TotalClicks: AllClicks || 0,
-            TotalLinks: modifiedAnalytics.length,
-            AllLocations,
-        })
-    }
-    res.status(404)
-    return new Error('Short Link not found')
+    return res.status(200).json(unifiedResponseObject)
 }
 
 // @desc    Create New Shortened Link
 // @route   POST /url
 export const createNewShortenedLink = async (req, res) => {
     // checks if there is long url within the request body
-    if (req.body.longUrl) {
-        try {
-            let isUrlContainProtocol = req.body.longUrl
+    if (!req.body.longUrl)
+        return res.status(500).json({ message: 'longUrl is required' })
 
-            // adds scheme to url if it doesn't exists
-            if (
-                !isUrlContainProtocol.indexOf('http://') == 0 &&
-                !isUrlContainProtocol.indexOf('https://') == 0
-            )
-                isUrlContainProtocol = `http://${req.body.longUrl}`
+    let shortLink = req.body.longUrl
 
-            const url = new URL(isUrlContainProtocol)
-            const urlOrigin = url.origin
+    // adds scheme to url if it doesn't exists
+    if (
+        !shortLink.indexOf('http://') == 0 &&
+        !shortLink.indexOf('https://') == 0
+    )
+        shortLink = `http://${req.body.longUrl}`
 
-            const { longUrl } = req.body
+    const url = new URL(shortLink)
 
-            // generate unique 7 character long id for the short url
-            const newUrlId = await nanoid(7)
+    // generate unique 7 character long id for the short url
+    let newUrlId = nanoid(7)
 
-            // checks if the short URL id already exists to avoid duplicate
-            //todo - move into a util function to also handle case of duplicate
-            const isUrlIdExists = await ShortLink.find({ urlId: newUrlId })
-            if (isUrlIdExists.length === 0);
-            {
-                const shortUrl = `${shortBaseUrl}/${newUrlId}`
-                const siteIcon = `${urlOrigin}/favicon.ico`
-                const newAnalytics = new Analytics()
-                await newAnalytics.save()
-                const linkToBeSaved = {
-                    longUrl,
-                    shortUrl,
-                    siteIcon,
-                    urlId: newUrlId,
-                    user: req.user ? req.user._id : null,
-                    analytics: newAnalytics._id,
-                }
+    // checks if the short URL id already exists to avoid duplicate
+    //todo - move into a util function to also handle case of duplicate
+    const isUrlIdExists = await ShortLink.find({ urlId: newUrlId })
+    if (isUrlIdExists.length !== 0);
+    newUrlId = nanoid(7)
 
-                // Add the link to db
-                const NewShortLink = new ShortLink(linkToBeSaved)
-                await NewShortLink.save()
-                await newAnalytics.updateOne({ shortLink: NewShortLink._id })
-                await newAnalytics.save()
-                if (req.user) {
-                    const ShortLinksAnalytics = await ShortLink.find(
-                        {
-                            user: req.user._id,
-                        },
-                        '-user -__v'
-                    ).populate({
-                        path: 'analytics',
-                        options: { sort: { created_at: -1 } },
-                        select: '-shortLink -_id -__v',
-                    })
+    //generate new Analytics
+    const newAnalytics = new Analytics()
+    await newAnalytics.save()
 
-                    let AllClicks = 0
+    // Add the link to db
+    const NewShortLink = new ShortLink({
+        longUrl: shortLink,
+        shortUrl: `${shortBaseUrl}/${newUrlId}`,
+        siteIcon: `${url.origin}/favicon.ico`,
+        urlId: newUrlId,
+        user: req.user ? req.user._id : null,
+        analytics: newAnalytics._id,
+    })
+    await NewShortLink.save()
 
-                    const AllLocations = []
+    // update analytics with created shortLink
+    await newAnalytics.updateOne({ shortLink: NewShortLink._id })
+    await newAnalytics.save()
 
-                    const modifiedAnalytics = []
+    //populate analytics along with the newly created shortlink
+    const ShortLinksAnalytics = await NewShortLink.populate({
+        path: 'analytics',
+        options: { sort: { created_at: -1 } },
+        select: '-shortLink -_id -__v',
+    })
+    if (!req.user) return res.status(201).json(ShortLinksAnalytics)
 
-                    await ShortLinksAnalytics.map((Link) => {
-                        // calculate total clicks of all links for easy management in front end
-                        AllClicks = Link.analytics.totalClicks + AllClicks
+    const unifiedResponseObject = await UnifyResponseObject(ShortLinksAnalytics)
 
-                        // calculate all locations of each non empty clicks location for easy management in front end
-                        if (Link.analytics.location.length !== 0)
-                            AllLocations.push(Link.analytics.location)
-
-                        // modify the array of object of ShortLinks and Analytics for easier management in front end
-                        modifiedAnalytics.push({
-                            id: Link._id,
-                            shortUrl: Link.shortUrl,
-                            siteIcon: Link.siteIcon,
-                            longUrl: Link.longUrl,
-                            createdAt: Link.createdAt,
-                            totalClicks: Link.analytics.totalClicks,
-                            clicks: Link.analytics.clicks,
-                            location: Link.analytics.location,
-                        })
-                    })
-
-                    return res.status(200).json({
-                        Analytics: modifiedAnalytics,
-                        TotalClicks: AllClicks || 0,
-                        TotalLinks: modifiedAnalytics.length,
-                        AllLocations,
-                    })
-                }
-                await NewShortLink.populate({
-                    path: 'analytics',
-                    select: '-shortLink -_id -__v',
-                })
-                return res.status(200).json(NewShortLink)
-            }
-        } catch (error) {
-            console.error(error)
-            return res.status(401).json({ error })
-        }
-    } else {
-        return res.status(401).json({ message: 'longUrl is required' })
-    }
+    return res.status(200).json(unifiedResponseObject)
 }
 
 // @desc    Redirect to Shortened Link
 // @route   GET /:id
 export const redirectToShortenedLink = async (req, res) => {
+    const isBot = isbot(req.headers['user-agent'])
     const shortenedLinkId = req.params.id
 
-    let foundShortenedLink
+    const shortenedLink = await ShortLink.findOne({
+        urlId: shortenedLinkId,
+    })
 
-    try {
-        if (shortenedLinkId) {
-            foundShortenedLink = await ShortLink.findOne({
-                urlId: shortenedLinkId,
-            })
-        }
-        if (foundShortenedLink) {
-            const { data } = await axios.get(
-                `https://ipinfo.io/${req.headers['x-forwarded-for']}?token=${process.env.IPINFO_TOKEN}`
-            )
+    // if link is not found, redirect to not found
+    if (!shortenedLink)
+        return res.redirect(301, 'https://shorten.domains/not-found')
 
-            const currentTime = new Date().toISOString().split('T', 1)[0]
+    //if visit isn't made by a detected bot, create analytics
+    if (!isBot) {
+        const { data } = await axios.get(
+            `https://ipinfo.io/${req.headers['x-forwarded-for']}?token=${process.env.IPINFO_TOKEN}`
+        )
+        const currentTime = new Date().toISOString().split('T', 1)[0]
 
-            await Analytics.findOneAndUpdate(
-                {
-                    shortLink: foundShortenedLink._id,
+        await Analytics.findOneAndUpdate(
+            {
+                shortLink: shortenedLink._id,
+            },
+            {
+                $push: {
+                    location: data,
+                    clicks: { date: currentTime },
                 },
-                {
-                    $push: {
-                        location: data,
-                        clicks: { date: currentTime },
-                    },
-                    $inc: { totalClicks: 1 },
-                },
-                { upsert: true, returnDocument: 'after' }
-            )
-
-            return res.redirect(foundShortenedLink.longUrl)
-        }
-    } catch (error) {
-        console.error(error)
-        return res.status(404).json(error)
+                $inc: { totalClicks: 1 },
+            },
+            { upsert: true, returnDocument: 'after' }
+        )
     }
+
+    //redirect to target long url
+    return res.redirect(shortenedLink.longUrl)
 }
 
 // @desc    Get Shortened Link Analytics
 // @route   GET /url/:id
 export const getShortenedLinkAanlytics = async (req, res) => {
     const urlId = req.params.id
-    let foundShortenedLink
 
-    try {
-        if (urlId) {
-            foundShortenedLink = await ShortLink.findOne(
-                {
-                    urlId,
-                },
-                '-user -__v'
-            )
-        }
-        if (foundShortenedLink) {
-            await foundShortenedLink.populate({
-                path: 'analytics',
-                options: { sort: { created_at: -1 } },
-                select: '-shortLink -_id -__v',
-            })
-            return res.status(200).json(foundShortenedLink)
-        }
-    } catch (error) {
-        console.error(error)
-        return res.status(404).json(error)
+    //attempt to find link
+    const foundShortenedLink = await ShortLink.findOne(
+        {
+            urlId,
+        },
+        '-user -__v'
+    )
+
+    //if link is not found, return error
+    if (!foundShortenedLink) {
+        throw new Error('Link could not be found.')
     }
+
+    // if link is found, populate the links analytics
+    await foundShortenedLink.populate({
+        path: 'analytics',
+        options: { sort: { created_at: -1 } },
+        select: '-shortLink -_id -__v',
+    })
+    return res.status(200).json(foundShortenedLink)
 }

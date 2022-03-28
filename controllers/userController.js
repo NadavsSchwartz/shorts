@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import ShortLink from '../models/shortLinkModel.js'
 
 export const getUserStats = async (req, res) => {
@@ -48,4 +49,16 @@ export const getUserStats = async (req, res) => {
             .status(500)
             .json({ message: 'Something went wrong', data: { error } })
     }
+}
+
+export const generateApiKey = async (req, res) => {
+    const apikey = nanoid(40)
+
+    const [user] = await req.user.update({ id: req.user._id }, { apikey })
+
+    if (!user) {
+        throw new Error("Couldn't generate API key. Please try again later.")
+    }
+
+    return res.status(201).send({ apikey })
 }
