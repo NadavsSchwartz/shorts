@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import session from 'express-session'
 import morgan from 'morgan'
-// import cors from 'cors'
+import asyncHandler from 'express-async-handler'
 import passport from 'passport'
 import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
@@ -20,11 +20,13 @@ import MongoStore from 'connect-mongo'
 const app = express()
 
 dotenv.config()
+connectDB()
+
 // Load environment variables from .env file in non prod environments
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
 }
-connectDB()
+app.use(helmet())
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.header('Origin'))
     res.header('Access-Control-Allow-Credentials', true)
@@ -41,7 +43,6 @@ app.use((req, res, next) => {
 app.set('trust proxy', true)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(helmet())
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 // Add the domains to the CORS policy
@@ -65,9 +66,6 @@ app.use(cookieParser(process.env.COOKIE_SECRET))
 // }
 
 // app.use(cors(corsOptions))
-
-app.set('trust proxy', 1)
-
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -109,7 +107,10 @@ const apiLimiter = rateLimit({
 app.use('/url', apiLimiter)
 app.use('/', UserRoutes)
 app.use('/', ShortenedLinkRoutes)
-app.get('/', (req, res) => res.send({ status: 'success' }))
+app.get(
+    '/',
+    asyncHandler((req, res) => res.send({ status: 'success' }))
+)
 
 app.use(notFound)
 app.use(errorHandler)
