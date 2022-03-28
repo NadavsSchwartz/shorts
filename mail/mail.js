@@ -25,7 +25,7 @@ const contactUsEmailTemplate = fs
     .replace(/{{domain}}/gm, 'shorten.domains')
     .replace(/{{site_name}}/gm, 'Shorts')
 
-export const contactUs = async ({ email }) => {
+export const contactUs = async (email) => {
     const mail = await transporter.sendMail({
         from: 'Shorts <support@shorten.domains>',
         to: email,

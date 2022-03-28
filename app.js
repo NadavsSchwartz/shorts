@@ -16,6 +16,7 @@ import './strategies/TwitterStrategy.js'
 import './strategies/GithubStrategy.js'
 import helmet from 'helmet'
 import MongoStore from 'connect-mongo'
+import transporter, { contactUs } from './mail/mail.js'
 
 const app = express()
 
@@ -26,7 +27,6 @@ connectDB()
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
 }
-app.use(helmet())
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.header('Origin'))
     res.header('Access-Control-Allow-Credentials', true)
@@ -40,6 +40,7 @@ app.use((req, res, next) => {
     )
     next()
 })
+app.use(helmet())
 app.set('trust proxy', true)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -72,11 +73,7 @@ app.use(
         resave: false,
         saveUninitialized: true,
         proxy: true,
-        cookie: {
-            sameSite: 'none',
-            secure: true,
-            httpOnly: false,
-        },
+
         store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     })
 )
@@ -103,7 +100,27 @@ const apiLimiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     message: 'You have reached your daily quota.',
 })
+app.post(
+    '/contact',
+    asyncHandler(async (req, res) => {
+        const { contactName, email, text } = req.body
+        const mail = await transporter.sendMail({
+            from: `<support@shorten.domains>`,
+            to: 'support@shorten.domains',
+            subject: `[REPORT] FROM ${contactName}`,
+            text: `${text.trim()} email:${email.trim()}`,
+            html: `${text.trim()} email:${email.trim()}`,
+        })
 
+        if (!mail.accepted.length) {
+            throw new Error("Couldn't submit the report. Try again later.")
+        }
+        await contactUs(email)
+        return res
+            .status(201)
+            .send({ message: 'Verification email has been sent.' })
+    })
+)
 app.use('/url', apiLimiter)
 app.use('/', UserRoutes)
 app.use('/', ShortenedLinkRoutes)
