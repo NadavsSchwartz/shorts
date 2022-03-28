@@ -11,7 +11,7 @@ export const UnifyResponseObject = async (Analytics) => {
             AllLocations.push(Link.analytics.location)
 
         // modify the array of object of ShortLinks and Analytics for easier management in front end
-        modifiedAnalytics.push({
+        return modifiedAnalytics.push({
             id: Link._id,
             shortUrl: Link.shortUrl,
             siteIcon: Link.siteIcon,
@@ -22,5 +22,11 @@ export const UnifyResponseObject = async (Analytics) => {
             location: Link.analytics.location,
         })
     })
-    return modifiedAnalytics
+
+    return {
+        Analytics: modifiedAnalytics,
+        TotalClicks: AllClicks || 0,
+        TotalLinks: modifiedAnalytics.length,
+        AllLocations,
+    }
 }

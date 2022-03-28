@@ -87,7 +87,17 @@ export const createNewShortenedLink = async (req, res) => {
     })
     if (!req.user) return res.status(201).json(ShortLinksAnalytics)
 
-    const unifiedResponseObject = await UnifyResponseObject(ShortLinksAnalytics)
+    const analytics = await ShortLink.find(
+        {
+            user: req.user._id,
+        },
+        '-user -__v'
+    ).populate({
+        path: 'analytics',
+        options: { sort: { created_at: -1 } },
+        select: '-shortLink -_id -__v',
+    })
+    const unifiedResponseObject = await UnifyResponseObject(analytics)
 
     return res.status(200).json(unifiedResponseObject)
 }
