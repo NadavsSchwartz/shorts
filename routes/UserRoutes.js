@@ -21,9 +21,7 @@ router.get(
         failureMessage: true,
         session: true,
     }),
-    asyncHandler((req, res) =>
-        res.redirect(`${process.env.FRONT_END_URL}/home`)
-    )
+    asyncHandler((req, res) => res.redirect('http://localhost:3000/home'))
 )
 
 router.get(
@@ -50,14 +48,13 @@ router.get('/auth/twitter', asyncHandler(passport.authenticate('twitter')))
 
 router.get(
     '/auth/twitter/callback',
-    asyncHandler(
-        passport.authenticate('twitter', {
-            failureRedirect: `${process.env.FRONT_END_URL}/signin`,
-            session: true,
-            failureMessage: true,
-        }),
-        (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
-    )
+
+    passport.authenticate('twitter', {
+        failureRedirect: `${process.env.FRONT_END_URL}/signin`,
+        session: true,
+        failureMessage: true,
+    }),
+    (req, res) => res.redirect(`${process.env.FRONT_END_URL}/home`)
 )
 
 router.get('/auth/github', asyncHandler(passport.authenticate('github')))

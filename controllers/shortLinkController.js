@@ -40,7 +40,7 @@ export const createNewShortenedLink = async (req, res) => {
     if (!req.body.longUrl)
         return res.status(500).json({ message: 'longUrl is required' })
 
-    let shortLink = req.body.longUrl
+    let shortLink = req.body.longUrl.trim()
 
     // adds scheme to url if it doesn't exists
     if (
