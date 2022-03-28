@@ -17,10 +17,12 @@ import './strategies/GithubStrategy.js'
 import helmet from 'helmet'
 import MongoStore from 'connect-mongo'
 import transporter, { contactUs } from './mail/mail.js'
+import { ValidateRecaptchaToken } from './utils/ValidateRecaptchaToken.js'
 
 const app = express()
 
 dotenv.config()
+
 connectDB()
 
 // Load environment variables from .env file in non prod environments
@@ -103,13 +105,19 @@ const apiLimiter = rateLimit({
 app.post(
     '/contact',
     asyncHandler(async (req, res) => {
-        const { contactName, email, text } = req.body
+        const { firstName, lastName, email, message, token } = req.body
+
+        const isHuman = await ValidateRecaptchaToken(token)
+        if (!isHuman)
+            return res.status(400).json({
+                message: 'recaptcha verification error. please try again',
+            })
         const mail = await transporter.sendMail({
             from: `<support@shorten.domains>`,
             to: 'support@shorten.domains',
-            subject: `[REPORT] FROM ${contactName}`,
-            text: `${text.trim()} email:${email.trim()}`,
-            html: `${text.trim()} email:${email.trim()}`,
+            subject: `[REPORT] FROM ${firstName} ${lastName}`,
+            text: `${message.trim()} email:${email.trim()}`,
+            html: `${message.trim()} email:${email.trim()}`,
         })
 
         if (!mail.accepted.length) {

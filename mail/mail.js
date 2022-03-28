@@ -33,7 +33,6 @@ export const contactUs = async (email) => {
         text: contactUsMailText,
         html: contactUsEmailTemplate,
     })
-
     if (!mail.accepted.length) {
         throw new Error("Couldn't send verification email. Try again later.")
     }

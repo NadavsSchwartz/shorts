@@ -1,4 +1,3 @@
-import e from 'express'
 import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import User from '../models/userModel.js'
