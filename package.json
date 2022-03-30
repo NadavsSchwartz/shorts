@@ -38,7 +38,7 @@
         "express-async-handler": "^1.2.0",
         "express-rate-limit": "^6.3.0",
         "express-session": "^1.17.2",
-        "fs": "^0.0.1-security",
+        "fs": "^0.0.2",
         "helmet": "^5.0.2",
         "isbot": "^3.4.5",
         "mongoose": "^6.1.8",
