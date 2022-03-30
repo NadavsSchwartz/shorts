@@ -4,6 +4,7 @@ import ShortLink from '../models/shortLinkModel.js'
 import Analytics from '../models/analyticsModel.js'
 import isbot from 'isbot'
 import { UnifyResponseObject } from '../utils/UnifyResponseObject.js'
+import { GoogleMalwareDetector } from '../utils/Malware.js'
 const shortBaseUrl = 'https://sds.sh'
 
 // @desc    delete Shortened Link Analytics
@@ -40,16 +41,18 @@ export const createNewShortenedLink = async (req, res) => {
     if (!req.body.longUrl)
         return res.status(500).json({ message: 'longUrl is required' })
 
-    let shortLink = req.body.longUrl.trim()
+    let urlToBeShortened = req.body.longUrl.trim()
 
     // adds scheme to url if it doesn't exists
     if (
-        !shortLink.indexOf('http://') == 0 &&
-        !shortLink.indexOf('https://') == 0
+        !urlToBeShortened.indexOf('http://') == 0 &&
+        !urlToBeShortened.indexOf('https://') == 0
     )
-        shortLink = `http://${req.body.longUrl}`
+        urlToBeShortened = `http://${req.body.longUrl}`
 
-    const url = new URL(shortLink)
+    const isMalware = await GoogleMalwareDetector(urlToBeShortened)
+    if (isMalware) return res.status(400).json({ message: 'Malware Detected.' })
+    const url = new URL(urlToBeShortened)
 
     // generate unique 7 character long id for the short url
     let newUrlId = nanoid(7)
@@ -66,7 +69,7 @@ export const createNewShortenedLink = async (req, res) => {
 
     // Add the link to db
     const NewShortLink = new ShortLink({
-        longUrl: shortLink,
+        longUrl: urlToBeShortened,
         shortUrl: `${shortBaseUrl}/${newUrlId}`,
         siteIcon: `${url.origin}/favicon.ico`,
         urlId: newUrlId,
