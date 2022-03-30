@@ -2,8 +2,8 @@ import nodemailer from 'nodemailer'
 import { contactUsMailText } from './text.js'
 import fs from 'fs'
 const mailConfig = {
-    host: 'smtp.porkbun.com',
-    port: 465,
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
     secure: true,
     auth: {
         user: process.env.MAIL_USER,
