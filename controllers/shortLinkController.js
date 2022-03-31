@@ -108,22 +108,27 @@ export const createNewShortenedLink = async (req, res) => {
 // @desc    Redirect to Shortened Link
 // @route   GET /:id
 export const redirectToShortenedLink = async (req, res) => {
-    const isBot = isbot(req.headers['user-agent'])
+    const isBot = await isbot(req.useragent.source)
+
     const shortenedLinkId = req.params.id
 
     const shortenedLink = await ShortLink.findOne({
         urlId: shortenedLinkId,
     })
-
     // if link is not found, redirect to not found
-    if (!shortenedLink)
+    if (!shortenedLink) {
         return res.redirect(301, 'https://shorten.domains/not-found')
+    }
 
     //if visit isn't made by a detected bot, create analytics
-    if (!isBot) {
-        const { data } = await axios.get(
-            `https://ipinfo.io/${req.headers['x-forwarded-for']}?token=${process.env.IPINFO_TOKEN}`
+    if (!req.useragent.isBot && !isBot) {
+        const ip = req.headers['x-real-ip']
+            ? req.headers['x-real-ip']
+            : req.headers['x-forwarded-for']
+        const ipLocation = await axios.get(
+            `https://ipinfo.io/${ip}?token=${process.env.IPINFO_TOKEN}`
         )
+            
         const currentTime = new Date().toISOString().split('T', 1)[0]
 
         await Analytics.findOneAndUpdate(
@@ -132,7 +137,7 @@ export const redirectToShortenedLink = async (req, res) => {
             },
             {
                 $push: {
-                    location: data,
+                    location: ipLocation.data,
                     clicks: { date: currentTime },
                 },
                 $inc: { totalClicks: 1 },

@@ -18,7 +18,7 @@ import helmet from 'helmet'
 import MongoStore from 'connect-mongo'
 import transporter, { contactUs } from './mail/mail.js'
 import { ValidateRecaptchaToken } from './utils/ValidateRecaptchaToken.js'
-
+import useragent from 'express-useragent'
 const app = express()
 
 dotenv.config()
@@ -44,6 +44,8 @@ app.use((req, res, next) => {
 })
 app.use(helmet())
 app.set('trust proxy', true)
+
+app.use(useragent.express())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET))
