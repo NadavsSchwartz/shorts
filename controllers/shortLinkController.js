@@ -1,10 +1,10 @@
-import { nanoid } from 'nanoid'
 import axios from 'axios'
 import ShortLink from '../models/shortLinkModel.js'
 import Analytics from '../models/analyticsModel.js'
 import isbot from 'isbot'
 import { UnifyResponseObject } from '../utils/UnifyResponseObject.js'
 import { GoogleMalwareDetector } from '../utils/Malware.js'
+import { generateId } from '../utils/Utils.js'
 const shortBaseUrl = 'https://sds.sh'
 
 // @desc    delete Shortened Link Analytics
@@ -54,15 +54,7 @@ export const createNewShortenedLink = async (req, res) => {
     if (isMalware) return res.status(400).json({ message: 'Malware Detected.' })
     const url = new URL(urlToBeShortened)
 
-    // generate unique 7 character long id for the short url
-    let newUrlId = nanoid(7)
-
-    // checks if the short URL id already exists to avoid duplicate
-    //todo - move into a util function to also handle case of duplicate
-    const isUrlIdExists = await ShortLink.find({ urlId: newUrlId })
-    if (isUrlIdExists.length !== 0);
-    newUrlId = nanoid(7)
-
+    const urlId = await generateId()
     //generate new Analytics
     const newAnalytics = new Analytics()
     await newAnalytics.save()
@@ -70,9 +62,9 @@ export const createNewShortenedLink = async (req, res) => {
     // Add the link to db
     const NewShortLink = new ShortLink({
         longUrl: urlToBeShortened,
-        shortUrl: `${shortBaseUrl}/${newUrlId}`,
+        shortUrl: `${shortBaseUrl}/${urlId}`,
         siteIcon: `${url.origin}/favicon.ico`,
-        urlId: newUrlId,
+        urlId: urlId,
         user: req.user ? req.user._id : null,
         analytics: newAnalytics._id,
     })
@@ -128,7 +120,7 @@ export const redirectToShortenedLink = async (req, res) => {
         const ipLocation = await axios.get(
             `https://ipinfo.io/${ip}?token=${process.env.IPINFO_TOKEN}`
         )
-            
+
         const currentTime = new Date().toISOString().split('T', 1)[0]
 
         await Analytics.findOneAndUpdate(
