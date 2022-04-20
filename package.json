@@ -28,7 +28,7 @@
         ]
     },
     "dependencies": {
-        "@sentry/node": "^6.19.2",
+        "@sentry/node": "^6.19.3",
         "axios": "^0.26.0",
         "connect-mongo": "^4.6.0",
         "cookie-parser": "^1.4.6",
