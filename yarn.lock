@@ -1994,10 +1994,10 @@ is-yarn-global@^0.3.0:
   resolved "https://registry.yarnpkg.com/is-yarn-global/-/is-yarn-global-0.3.0.tgz#d502d3382590ea3004893746754c89139973e232"
   integrity sha512-VjSeb/lHmkoyd8ryPVIKvOCn4D1koMqY+vqyjjUfc3xyKtP4dYOxM44sZrnqQSzSds3xyOrUTLTC9LVCVgLngw==
 
-isbot@^3.4.5:
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/isbot/-/isbot-3.4.5.tgz#69554585b725238692d9cc41d9a842c5b37fa33d"
-  integrity sha512-+KD6q1BBtw0iK9aGBGSfxJ31/ZgizKRjhm8ebgJUBMx0aeeQuIJ1I72beCoIrltIZGrSm4vmrxRxrG5n1aUTtw==
+isbot@^3.4.6:
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/isbot/-/isbot-3.4.6.tgz#e3dd70034b6a6fad043753de71cd96929a678015"
+  integrity sha512-EEi3SVCPB4WHtMBaAYzYLgCP7yG9qixseYCf3IG0Yc+howLia+XFPLTT1437rzeViLeDInKOXOdFhs9Fa/xgWQ==
 
 isexe@^2.0.0:
   version "2.0.0"
