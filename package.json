@@ -37,7 +37,7 @@
         "dotenv": "^14.3.2",
         "express": "^4.17.3",
         "express-async-handler": "^1.2.0",
-        "express-rate-limit": "^6.3.0",
+        "express-rate-limit": "^6.4.0",
         "express-session": "^1.17.2",
         "express-useragent": "^1.0.15",
         "fs": "^0.0.2",
