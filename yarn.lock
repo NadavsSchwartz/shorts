@@ -2449,10 +2449,10 @@ node-uri@^1.1.1:
   resolved "https://registry.yarnpkg.com/node-uri/-/node-uri-1.1.1.tgz#eb0adc61645c14b9b7fbf5c7232734e4158dbafa"
   integrity sha512-SoyEgSwAm4zEkTJPIhhoo+58RFxssUbO+xfWjzehYTNbu9Ot8tjekGLe7eHdkrmJ/1YF74fBJv/ZiCXUN219KA==
 
-nodemailer@^6.7.3:
-  version "6.7.3"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.7.3.tgz#b73f9a81b9c8fa8acb4ea14b608f5e725ea8e018"
-  integrity sha512-KUdDsspqx89sD4UUyUKzdlUOper3hRkDVkrKh/89G+d9WKsU5ox51NWS4tB1XR5dPUdR4SP0E3molyEfOvSa3g==
+nodemailer@^7.0.11:
+  version "7.0.11"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-7.0.11.tgz#5f7b06afaec20073cff36bea92d1c7395cc3e512"
+  integrity sha512-gnXhNRE0FNhD7wPSCGhdNh46Hs6nm+uTyg+Kq0cZukNQiYdnCsoQjodNP9BQVG9XrcK/v6/MgpAPBUFyzh9pvw==
 
 nodemon@^2.0.15:
   version "2.0.15"
